@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>文化茶话 · 中国优秀传统文化分享会</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/loading.css" />
+    <style>
+      :root {
+        --primary: #B22222;
+        --primary-light: #DC143C;
+        --primary-dark: #8B0000;
+        --primary-gradient: linear-gradient(135deg, #B22222 0%, #DC143C 100%);
+      }
+      .brand::before {
+        content: "🏮";
+      }
+      .nav a.active {
+        color: var(--primary);
+        background: rgba(178, 34, 34, 0.1);
+      }
+      .nav a.active::after {
+        background: var(--primary);
+      }
+      .btn {
+        background: var(--primary-gradient);
+      }
+      .btn:hover {
+        box-shadow: 0 4px 12px rgba(178, 34, 34, 0.3);
+      }
+      .chat-layout {
+        display: flex;
+        gap: 1.5rem;
+        align-items: stretch;
+        justify-content: center;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+      }
+      .chat-main {
+        flex: 0 1 1400px;
+      }
+      .chat-container {
+        border: 1px solid rgba(178, 34, 34, 0.2);
+        display: flex;
+        flex-direction: column;
+        height: 600px;
+        border-radius: var(--radius-lg);
+      }
+      .chat-header {
+        background: linear-gradient(135deg, rgba(178, 34, 34, 0.08) 0%, rgba(220, 20, 60, 0.05) 100%);
+        border-bottom: 1px solid rgba(178, 34, 34, 0.15);
+        padding: var(--space-3) var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+      .message-bubble.own {
+        background: linear-gradient(135deg, #B22222 0%, #DC143C 100%);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        display: inline-block;
+        max-width: 100%;
+        word-wrap: break-word;
+      }
+      .message-bubble.other {
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        color: #374151;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        display: inline-block;
+        max-width: 100%;
+        word-wrap: break-word;
+      }
+      .chat-input-area {
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--border);
+        background: var(--bg-hover);
+      }
+      .tips-sidebar {
+        flex: 0 0 220px;
+        background: linear-gradient(135deg, rgba(178, 34, 34, 0.05) 0%, rgba(220, 20, 60, 0.02) 100%);
+        border: 1px solid rgba(178, 34, 34, 0.15);
+        border-radius: 12px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+      }
+      .tips-sidebar h3 {
+        color: #8B0000;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+      .tips-sidebar .tips-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .tips-sidebar .tip-item {
+        background: white;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 0.75rem;
+        flex: 1;
+      }
+      .tips-sidebar .tip-item:last-child {
+        margin-bottom: 0;
+      }
+      .tips-sidebar .tip-item h4 {
+        color: #B22222;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+      }
+      .tips-sidebar .tip-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .tips-sidebar .tip-head h4 {
+        margin: 0;
+      }
+      .tips-sidebar .tip-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #B22222 0%, #DC143C 100%);
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+      }
+      .tips-sidebar .tip-item p {
+        font-size: 0.8125rem;
+        color: #6b7280;
+        margin: 0;
+        line-height: 1.5;
+      }
+      @media (max-width: 1700px) {
+        .chat-main {
+          flex: 1 1 auto;
+          max-width: calc(100% - 240px);
+        }
+      }
+      @media (max-width: 1200px) {
+        .chat-layout {
+          flex-direction: column;
+          align-items: center;
+        }
+        .chat-main {
+          flex: 0 0 auto;
+          width: 100%;
+          max-width: 100%;
+        }
+        .chat-container {
+          height: 500px;
+        }
+        .tips-sidebar {
+          flex: 0 0 auto;
+          width: 100%;
+          max-width: 100%;
+        }
+        .tips-sidebar .tips-content {
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+        }
+        .tips-sidebar .tip-item {
+          flex: 1 1 calc(50% - 0.375rem);
+          margin-bottom: 0;
+        }
+      }
+      @media (max-width: 768px) {
+        .chat-container {
+          height: 450px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="topbar">
+        <div class="brand">中国优秀传统文化分享会</div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+
+      <div class="chat-layout">
+        <div class="card chat-main" style="padding: 0; overflow: hidden; margin: 0;">
+          <div class="card-header" style="padding: 1.25rem 1.5rem; margin-bottom: 0; background: linear-gradient(135deg, rgba(178, 34, 34, 0.08) 0%, rgba(220, 20, 60, 0.05) 100%); border-bottom: 1px solid rgba(178, 34, 34, 0.15);">
+            <div>
+              <h1 style="margin-bottom: 0.25rem;">💬 文化茶话</h1>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">实时探讨传统文化话题 · 诗词、书法、民俗、节日等</p>
+            </div>
+          </div>
+
+          <div class="chat-container">
+            <div class="chat-header">
+              <span style="font-weight: 600; color: #8B0000;">🏮 文化大厅</span>
+              <span id="statusIndicator" class="badge badge-green" style="margin-left: auto;">● 已连接</span>
+            </div>
+            <div id="log" class="chat-messages"></div>
+            <div class="chat-input-area">
+              <form id="msgForm" style="display: flex; gap: 0.5rem; width: 100%;">
+                <input id="msg" placeholder="分享你的文化话题...（例如：大家知道春节为什么要贴春联吗？）" autocomplete="off" required style="flex: 1;" />
+                <button class="btn" type="submit">发送</button>
+              </form>
+            </div>
+          </div>
+
+          <p id="err" class="err" style="margin: 1rem 1.5rem;"></p>
+        </div>
+
+        <aside class="tips-sidebar">
+          <h3>💡 茶话礼仪提示</h3>
+          <div class="tips-content">
+            <div class="tip-item">
+              <div class="tip-head"><span class="tip-icon">🎯</span><h4>话题相关</h4></div>
+              <p>围绕传统文化主题交流，如诗词、书法、民俗、节日等</p>
+            </div>
+            <div class="tip-item">
+              <div class="tip-head"><span class="tip-icon">🤝</span><h4>言语文明</h4></div>
+              <p>使用礼貌用语，尊重他人观点，不嘲讽、不攻击</p>
+            </div>
+            <div class="tip-item">
+              <div class="tip-head"><span class="tip-icon">✨</span><h4>积极分享</h4></div>
+              <p>乐于分享自己的文化知识和学习心得</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script src="/vendor/socket.io.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script>
+      (async () => {
+        const user = await getMe();
+        requireAuthPage(user);
+        window.currentUser = user;
+        document.getElementById('nav').innerHTML =
+          '<a href="/dashboard.html">大厅</a>' +
+          '<a href="/mail.html">书信</a>' +
+          '<a href="/chat.html" class="active">茶话</a>' +
+          '<a href="/space.html">展厅</a>' +
+          '<a href="/civics.html">礼仪</a>' +
+          '<a href="/evaluate.html">评价</a>' +
+          '<a href="#" id="logout">退出</a>';
+        document.getElementById('logout').onclick = async (e) => {
+          e.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          location.href = '/index.html';
+        };
+
+        initTaskControlRealtime();
+        onTaskControlChange((controls) => {
+          setChatLocked(isTaskLockedByControl('chat', controls));
+        });
+      })();
+
+      let socket = null;
+      const log = document.getElementById('log');
+      const statusEl = document.getElementById('statusIndicator');
+      let currentRoom = '文化大厅';
+      let chatTaskLocked = false;
+
+      function setChatLocked(locked) {
+        const wasLocked = chatTaskLocked;
+        chatTaskLocked = !!locked;
+        applyTaskControlToSelectors(['#msg', '#msgForm button[type="submit"]'], chatTaskLocked, '第2课（在线茶话）已锁定');
+        if (chatTaskLocked) {
+          document.getElementById('err').textContent = '第2课（在线茶话）已被教师锁定，暂不可发言';
+        } else if (document.getElementById('err').textContent.includes('第2课（在线茶话）')) {
+          document.getElementById('err').textContent = '';
+        }
+
+        if (wasLocked && !chatTaskLocked && socket && socket.connected) {
+          socket.emit('chat:join', { room: currentRoom }, (resp) => {
+            if (resp && resp.ok) loadHistory(currentRoom);
+          });
+        }
+      }
+
+      function setStatus(connected) {
+        if (connected) {
+          statusEl.textContent = '● 已连接';
+          statusEl.className = 'badge badge-green';
+        } else {
+          statusEl.textContent = '● 未连接';
+          statusEl.className = 'badge badge-amber';
+        }
+      }
+
+      async function loadHistory(room) {
+        try {
+          const data = await api('/api/chat/history?room=' + encodeURIComponent(room));
+          const messages = data.messages || [];
+          log.innerHTML = '';
+          messages.forEach(msg => {
+            appendMessage({
+              displayName: msg.displayName,
+              username: msg.username,
+              text: msg.body,
+              time: msg.createdAt
+            }, msg.username === window.currentUser.username);
+          });
+        } catch (e) {
+          console.error('加载历史消息失败:', e);
+        }
+      }
+
+      function connect() {
+        if (socket) {
+          try {
+            socket.disconnect();
+          } catch {}
+        }
+
+        socket = io({
+          path: '/socket.io/',
+          transports: ['polling', 'websocket']
+        });
+
+        socket.on('connect', () => {
+          setStatus(true);
+          socket.emit('chat:join', { room: currentRoom }, (resp) => {
+            if (resp && resp.ok) {
+              loadHistory(currentRoom);
+            } else if (resp && resp.error) {
+              document.getElementById('err').textContent = resp.error;
+            }
+          });
+        });
+
+        socket.on('disconnect', () => {
+          setStatus(false);
+        });
+
+        socket.on('connect_error', (error) => {
+          setStatus(false);
+          console.error('连接错误:', error);
+        });
+
+        socket.on('chat:message', (msg) => {
+          appendMessage({
+            displayName: msg.displayName,
+            username: msg.username,
+            text: msg.body,
+            time: msg.createdAt
+          }, msg.username === window.currentUser.username);
+        });
+      }
+
+      function appendMessage(data, isMe) {
+        const div = document.createElement('div');
+        div.style.cssText = 'display: flex; gap: 0.75rem; ' + (isMe ? 'flex-direction: row-reverse;' : '');
+        div.innerHTML =
+          '<div style="width: 36px; height: 36px; border-radius: 50%; background: ' +
+          (isMe ? 'linear-gradient(135deg, #B22222 0%, #DC143C 100%)' : 'linear-gradient(135deg, #8B4513 0%, #D2691E 100%)') +
+          '; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem; flex-shrink: 0;">' +
+          getInitials(data.displayName) +
+          '</div>' +
+          '<div style="max-width: 70%;">' +
+          '<div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem; ' +
+          (isMe ? 'text-align: right;' : '') +
+          '">' +
+          escapeHtml(data.displayName) +
+          ' · ' +
+          formatTime(data.time) +
+          '</div>' +
+          '<div class="message-bubble ' +
+          (isMe ? 'own' : 'other') +
+          '">' +
+          escapeHtml(data.text) +
+          '</div>' +
+          '</div>';
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function appendSystem(text) {
+        const div = document.createElement('div');
+        div.style.cssText = 'text-align: center; color: #9ca3af; font-size: 0.75rem; margin: 0.5rem 0;';
+        div.textContent = text;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      document.getElementById('msgForm').onsubmit = (e) => {
+        e.preventDefault();
+        if (chatTaskLocked) {
+          document.getElementById('err').textContent = '第2课（在线茶话）已被教师锁定，暂不可发言';
+          return;
+        }
+        const input = document.getElementById('msg');
+        const text = input.value.trim();
+        if (!text) return;
+        if (socket && socket.connected) {
+          socket.emit('chat:message', { body: text }, (resp) => {
+            if (resp && resp.ok) {
+              input.value = '';
+            } else {
+              document.getElementById('err').textContent = resp.error || '发送失败';
+            }
+          });
+        } else {
+          document.getElementById('err').textContent = '未连接，请稍后再试';
+        }
+      };
+
+      function getInitials(name) {
+        if (!name) return '?';
+        const parts = String(name).trim().split(/\s+/);
+        return parts.map((p) => p[0]).join('').slice(0, 2).toUpperCase();
+      }
+
+      function escapeHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = s == null ? '' : String(s);
+        return d.innerHTML;
+      }
+
+      function formatTime(ts) {
+        if (!ts) return '';
+        const d = new Date(ts);
+        return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      }
+
+      connect();
+    </script>
+  </body>
+</html>

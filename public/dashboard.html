@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>文化分享会大厅 · 中国优秀传统文化分享会</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      :root {
+        --primary: #8B4513;
+        --primary-light: #D2691E;
+        --primary-dark: #654321;
+        --primary-gradient: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+      }
+      .brand::before {
+        content: "🏮";
+      }
+      .nav a.active {
+        color: var(--primary);
+        background: rgba(139, 69, 19, 0.1);
+      }
+      .nav a.active::after {
+        background: var(--primary);
+      }
+      .btn {
+        background: var(--primary-gradient);
+      }
+      .btn:hover {
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+      }
+      .civics-banner {
+        background: linear-gradient(135deg, rgba(139, 69, 19, 0.08) 0%, rgba(210, 105, 30, 0.05) 100%);
+        border-color: rgba(139, 69, 19, 0.2);
+      }
+      .civics-banner::before {
+        content: "🏮";
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="topbar">
+        <div class="brand">中国优秀传统文化分享会</div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+
+      <div class="civics-banner" id="who"></div>
+
+      <div class="card">
+        <div class="card-header" style="border-bottom: none; padding-bottom: 0;">
+          <div>
+            <h1 style="margin-bottom: 0.5rem;">🏮 文化分享会大厅</h1>
+            <p class="muted">本单元任务建议顺序：<strong>书信分享文化心得</strong> → <strong>即时交流文化话题</strong> → <strong>展示传统文化作品</strong></p>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+          <a href="/mail.html" class="feature-card" style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(139, 69, 19, 0.08) 0%, rgba(210, 105, 30, 0.03) 100%); border: 1px solid rgba(139, 69, 19, 0.2); border-radius: 12px; text-decoration: none; transition: all 0.2s;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(139,69,19,0.25);">📜</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #5D3A1A;">文化书信</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">用传统书信礼仪分享文化心得，地址：<span id="em"></span></p>
+            </div>
+          </a>
+          
+          <a href="/chat.html" class="feature-card" style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(178, 34, 34, 0.08) 0%, rgba(220, 20, 60, 0.03) 100%); border: 1px solid rgba(178, 34, 34, 0.2); border-radius: 12px; text-decoration: none; transition: all 0.2s;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #B22222 0%, #DC143C 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(178,34,34,0.25);">💬</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #8B0000;">文化茶话</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">实时探讨传统文化话题，如诗词、书法、民俗等</p>
+            </div>
+          </a>
+          
+          <a href="/space.html" class="feature-card" style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(218, 165, 32, 0.08) 0%, rgba(255, 215, 0, 0.03) 100%); border: 1px solid rgba(218, 165, 32, 0.3); border-radius: 12px; text-decoration: none; transition: all 0.2s;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #DAA520 0%, #FFD700 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(218,165,32,0.3);">🎨</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #B8860B;">文化展厅</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">展示你的传统文化作品：书法、绘画、民俗介绍等</p>
+            </div>
+          </a>
+          
+          <a href="/civics.html" class="feature-card" style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(85, 107, 47, 0.08) 0%, rgba(107, 142, 35, 0.03) 100%); border: 1px solid rgba(85, 107, 47, 0.2); border-radius: 12px; text-decoration: none; transition: all 0.2s;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #556B2F 0%, #6B8E23 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(85,107,47,0.25);">📋</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #2E4A1C;">礼仪规范</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">学习传统礼仪，做文明有礼的文化传承者</p>
+            </div>
+          </a>
+
+          <a href="/evaluate.html" class="feature-card" style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.03) 100%); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; text-decoration: none; transition: all 0.2s;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(59,130,246,0.25);">⭐</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #1E40AF;">自我评价</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">按三节课完成情况为自己打星，最高 3 颗星</p>
+            </div>
+          </a>
+          
+          <a href="/admin.html" id="adminLink" class="feature-card" style="display: none; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(139, 0, 0, 0.08) 0%, rgba(178, 34, 34, 0.03) 100%); border: 1px solid rgba(139, 0, 0, 0.2); border-radius: 12px; text-decoration: none; transition: all 0.2s;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #8B0000 0%, #B22222 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(139,0,0,0.25);">👨‍🏫</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #5C0000;">教师管理</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">内容管理与举报处理</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(210, 105, 30, 0.02) 100%); border-color: rgba(139, 69, 19, 0.15);">
+        <h2 style="margin-bottom: 1rem;">🌟 三节课学习任务</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+          <div style="padding: 1rem; background: white; border-radius: 10px; border-left: 4px solid #8B4513;">
+            <h4 style="margin-bottom: 0.5rem; color: #8B4513;">第1课：体验邮件交流</h4>
+            <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">完成一封文化书信：有收件人、清晰主题、完整正文，可附学习资料附件。</p>
+          </div>
+          <div style="padding: 1rem; background: white; border-radius: 10px; border-left: 4px solid #D2691E;">
+            <h4 style="margin-bottom: 0.5rem; color: #D2691E;">第2课：在线聊天互动</h4>
+            <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">在文化茶话中进行不少于 3 次有效发言，做到礼貌表达、围绕主题、积极回应。</p>
+          </div>
+          <div style="padding: 1rem; background: white; border-radius: 10px; border-left: 4px solid #CD853F;">
+            <h4 style="margin-bottom: 0.5rem; color: #CD853F;">第3课：发布文化作品</h4>
+            <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">在文化展厅发布 1 份作品（标题+介绍+可选附件），并完成至少 1 条文明评论。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      .feature-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.12);
+      }
+    </style>
+    
+    <script src="/vendor/socket.io.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script>
+      (async () => {
+        const user = await getMe();
+        requireAuthPage(user);
+        const email = user.email || '未知地址';
+        document.getElementById('em').textContent = email;
+        document.getElementById('who').innerHTML =
+          '欢迎 <strong>' +
+          (user.displayName || user.username) +
+          '</strong> 参加中国优秀传统文化分享会！（' +
+          email +
+          '）';
+        document.getElementById('nav').innerHTML =
+          '<a href="/dashboard.html" class="active">大厅</a>' +
+          '<a href="/mail.html">书信</a>' +
+          '<a href="/chat.html">茶话</a>' +
+          '<a href="/space.html">展厅</a>' +
+          '<a href="/civics.html">礼仪</a>' +
+          '<a href="/evaluate.html">评价</a>' +
+          '<a href="#" id="logout">退出</a>';
+        if (user.role === 'teacher') {
+          document.getElementById('adminLink').style.display = 'flex';
+        }
+        document.getElementById('logout').addEventListener('click', async (e) => {
+          e.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          window.location.href = '/index.html';
+        });
+
+        initTaskControlRealtime();
+      })();
+    </script>
+  </body>
+</html>

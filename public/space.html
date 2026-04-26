@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>文化展厅 · 中国优秀传统文化分享会</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/loading.css" />
+    <style>
+      :root {
+        --primary: #DAA520;
+        --primary-light: #FFD700;
+        --primary-dark: #B8860B;
+        --primary-gradient: linear-gradient(135deg, #DAA520 0%, #FFD700 100%);
+      }
+      .brand::before {
+        content: "🏮";
+      }
+      .nav a.active {
+        color: var(--primary-dark);
+        background: rgba(218, 165, 32, 0.1);
+      }
+      .nav a.active::after {
+        background: var(--primary);
+      }
+      .btn {
+        background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+      }
+      .btn:hover {
+        box-shadow: 0 4px 12px rgba(218, 165, 32, 0.4);
+      }
+      .post-card {
+        border-left: 4px solid #DAA520;
+      }
+      .post-avatar {
+        background: linear-gradient(135deg, #DAA520 0%, #FFD700 100%);
+      }
+      .post-actions button.primary {
+        background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+      }
+      .comment-avatar {
+        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%);
+      }
+      #postModal .modal-panel,
+      #reportModal .modal-panel {
+        animation: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="topbar">
+        <div class="brand">中国优秀传统文化分享会</div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h1 style="margin-bottom: 0.25rem;">🎨 文化展厅</h1>
+            <p class="muted" style="margin-bottom: 0;">展示你的传统文化作品：书法、绘画、民俗介绍、诗词创作等</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary" type="button" id="refresh">🔄 刷新</button>
+            <button class="btn" type="button" id="openPost">➕ 发布作品</button>
+          </div>
+        </div>
+
+        <div id="posts" style="display: grid; gap: 1rem;"></div>
+
+        <div id="empty" class="empty-state" style="display: none;">
+          <div class="empty-state-icon">🎨</div>
+          <div class="empty-state-title">展厅暂无作品</div>
+          <p class="muted">快来发布你的传统文化作品吧！可以是书法、绘画、民俗介绍、诗词创作等</p>
+        </div>
+
+        <p id="err" class="err"></p>
+      </div>
+    </div>
+
+    <div id="postModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;">
+      <div class="modal-backdrop" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5);"></div>
+      <div class="modal-panel" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 560px; width: 95%; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+        <div class="modal-header" style="background: linear-gradient(135deg, rgba(218, 165, 32, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%); padding: 1rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0;">
+          <h3 style="margin: 0;">🎨 发布传统文化作品</h3>
+          <button class="btn btn-secondary btn-sm" type="button" id="closePost" style="padding: 0.25rem 0.5rem; min-width: auto;">✕</button>
+        </div>
+        <form id="postForm" style="padding: 1.5rem;">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">作品标题</label>
+            <input name="title" placeholder="例如：我的书法作品《静夜思》" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;" />
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">作品介绍</label>
+            <textarea name="body" rows="4" placeholder="介绍你的作品：创作灵感、文化内涵、使用的技法等..." required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; resize: vertical;"></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">附件（图片、文档等，可选）</label>
+            <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap: wrap;">
+              <input id="postFileInput" type="file" name="file" accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.doc,.docx" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;" />
+              <button class="btn btn-secondary btn-sm" id="previewPostUpload" type="button" disabled>预览附件</button>
+              <button class="btn btn-secondary btn-sm" id="clearPostUpload" type="button" disabled>清除附件</button>
+            </div>
+            <p id="postFileName" class="muted" style="font-size: 0.75rem; margin-top: 0.25rem; color: #888;"></p>
+            <p class="muted" style="font-size: 0.75rem; margin-top: 0.25rem; color: #888;">支持：图片(png/jpg/gif/webp)、PDF、TXT、Word(doc/docx)，最大8MB</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee;">
+            <button class="btn btn-secondary" type="button" id="cancelPost">取消</button>
+            <button class="btn" type="submit">发布作品</button>
+          </div>
+          <p id="postErr" class="err" style="margin-top: 0.5rem;"></p>
+        </form>
+      </div>
+    </div>
+
+    <div id="filePreviewModal" class="modal" style="display:none; position: fixed; inset: 0; z-index: 1300;">
+      <div style="position:absolute; inset:0; background: rgba(0,0,0,0.5);"></div>
+      <div style="position:absolute; top:50%; left:50%; transform: translate(-50%, -50%); width:min(92vw, 980px); max-height:86vh; background:white; border-radius:12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display:flex; flex-direction:column; overflow:hidden;">
+        <div style="padding:0.9rem 1rem; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; gap:0.75rem;">
+          <strong id="previewTitle" style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></strong>
+          <button id="previewDownload" class="btn btn-secondary btn-sm" type="button">下载</button>
+          <button id="closePreview" class="btn btn-secondary btn-sm" type="button">关闭</button>
+        </div>
+        <div id="previewBody" style="padding:1rem; overflow:auto; min-height:240px;"></div>
+      </div>
+    </div>
+
+    <div id="reportModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;">
+      <div class="modal-backdrop" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5);"></div>
+      <div class="modal-panel" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 480px; width: 95%; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 1.5rem;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 style="margin: 0;">🚩 举报不当内容</h3>
+          <button class="btn btn-secondary btn-sm" type="button" id="closeReport">✕</button>
+        </div>
+        <form id="reportForm">
+          <input type="hidden" name="targetType" />
+          <input type="hidden" name="targetId" />
+          <p class="muted" style="margin-bottom: 1rem;">请说明举报原因，教师会及时处理。</p>
+          <div class="form-group">
+            <label>举报原因</label>
+            <textarea name="reason" rows="3" placeholder="例如：内容与文化主题无关、含有不当言论等..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" type="button" id="cancelReport">取消</button>
+            <button class="btn danger" type="submit">提交举报</button>
+          </div>
+          <p id="reportErr" class="err"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="/vendor/socket.io.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script>
+      (async () => {
+        const user = await getMe();
+        requireAuthPage(user);
+        document.getElementById('nav').innerHTML =
+          '<a href="/dashboard.html">大厅</a>' +
+          '<a href="/mail.html">书信</a>' +
+          '<a href="/chat.html">茶话</a>' +
+          '<a href="/space.html" class="active">展厅</a>' +
+          '<a href="/civics.html">礼仪</a>' +
+          '<a href="/evaluate.html">评价</a>' +
+          '<a href="#" id="logout">退出</a>';
+        document.getElementById('logout').onclick = async (e) => {
+          e.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          location.href = '/index.html';
+        };
+
+        initTaskControlRealtime();
+        onTaskControlChange((controls) => {
+          setSpaceLocked(isTaskLockedByControl('space', controls));
+        });
+      })();
+
+      let postsCache = [];
+      let currentPreviewUrl = '';
+      let spaceTaskLocked = false;
+
+      function ensureSpaceUnlocked() {
+        if (!spaceTaskLocked) return true;
+        document.getElementById('err').textContent = '第3课（文化展厅）已被教师锁定，暂不可操作';
+        return false;
+      }
+
+      function setSpaceLocked(locked) {
+        const wasLocked = spaceTaskLocked;
+        spaceTaskLocked = !!locked;
+        applyTaskControlToSelectors(
+          [
+            '#openPost',
+            '#refresh',
+            '[data-act="like"]',
+            '[data-act="toggleComments"]',
+            '.comment-form input',
+            '.comment-form button',
+            '.report-btn',
+            '#postForm input',
+            '#postForm textarea',
+            '#postForm button',
+            '#reportForm textarea',
+            '#reportForm button',
+          ],
+          spaceTaskLocked,
+          '第3课（文化展厅）已锁定'
+        );
+
+        if (spaceTaskLocked) {
+          document.getElementById('err').textContent = '第3课（文化展厅）已被教师锁定，暂不可操作';
+          document.getElementById('postModal').style.display = 'none';
+          document.getElementById('reportModal').style.display = 'none';
+        } else if (document.getElementById('err').textContent.includes('第3课（文化展厅）')) {
+          document.getElementById('err').textContent = '';
+        }
+
+        if (wasLocked && !spaceTaskLocked) {
+          load();
+        }
+      }
+
+      async function load() {
+        if (spaceTaskLocked) {
+          document.getElementById('posts').innerHTML = '';
+          document.getElementById('empty').style.display = 'none';
+          return;
+        }
+        document.getElementById('err').textContent = '';
+        try {
+          const data = await api('/api/posts');
+          postsCache = data.posts || [];
+
+          // 为每个作品加载评论
+          for (const post of postsCache) {
+            try {
+              const commentsData = await api('/api/posts/' + post.id + '/comments');
+              post.comments = commentsData.comments || [];
+            } catch (e) {
+              post.comments = [];
+            }
+          }
+
+          const container = document.getElementById('posts');
+          container.innerHTML = '';
+
+          if (postsCache.length === 0) {
+            document.getElementById('empty').style.display = 'block';
+          } else {
+            document.getElementById('empty').style.display = 'none';
+            for (const p of postsCache) {
+              const el = document.createElement('div');
+              el.className = 'post-card';
+              el.innerHTML = renderPost(p);
+              container.appendChild(el);
+            }
+            bindPostEvents();
+            setSpaceLocked(spaceTaskLocked);
+          }
+        } catch (e) {
+          document.getElementById('err').textContent = e.message;
+        }
+      }
+
+      function renderPost(p) {
+        let fileBlock = '';
+        if (p.fileUrl && p.fileName) {
+          const isImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(p.fileName);
+          if (isImage) {
+            fileBlock = '<div class="file-block" style="margin-top: 1rem;">' +
+              '<img src="' + escapeHtml(p.fileUrl) + '" alt="' + escapeHtml(p.fileName) + '" style="max-width: 100%; border-radius: 8px;" />' +
+              '<div style="margin-top:0.5rem; display:flex; gap:0.5rem; flex-wrap: wrap;">' +
+              '<button class="btn btn-sm btn-secondary preview-file-btn" type="button" data-url="' + escapeHtml(p.fileUrl) + '" data-name="' + escapeHtml(p.fileName) + '" data-mime="' + escapeHtml(p.mime || '') + '">预览附件</button>' +
+              '<a class="btn btn-sm" href="' + escapeHtml(p.fileUrl) + '" download="' + escapeHtml(p.fileName) + '">下载</a>' +
+              '</div>' +
+              '</div>';
+          } else {
+            fileBlock = '<div class="file-block">' +
+              '<span>📎 ' + escapeHtml(p.fileName) + '</span>' +
+              '<button class="btn btn-sm btn-secondary preview-file-btn" type="button" data-url="' + escapeHtml(p.fileUrl) + '" data-name="' + escapeHtml(p.fileName) + '" data-mime="' + escapeHtml(p.mime || '') + '">预览附件</button>' +
+              '<a class="btn btn-sm" href="' + escapeHtml(p.fileUrl) + '" download="' + escapeHtml(p.fileName) + '">下载</a>' +
+              '</div>';
+          }
+        }
+
+        const comments = p.comments || [];
+        const commentsHtml = comments
+          .map(
+            (c) =>
+              '<div class="comment-item" style="display: flex; gap: 0.75rem; padding: 0.75rem; background: rgba(218,165,32,0.05); border-radius: 8px; margin-bottom: 0.5rem;">' +
+              '<div class="comment-avatar" style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem; flex-shrink: 0;">' +
+              getInitials(c.displayName) +
+              '</div>' +
+              '<div style="flex: 1;">' +
+              '<div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">' +
+              '<span style="font-weight: 600; color: #5D3A1A;">' +
+              escapeHtml(c.displayName) +
+              '</span>' +
+              '<span class="muted" style="font-size: 0.75rem;">' +
+              formatTime(c.createdAt) +
+              '</span>' +
+              '</div>' +
+              '<div style="color: #4a4a4a; font-size: 0.9375rem;">' +
+              escapeHtml(c.body) +
+              '</div>' +
+              '</div>' +
+              '<button class="btn btn-sm btn-secondary report-btn" data-type="comment" data-id="' +
+              c.id +
+              '" title="举报">🚩</button>' +
+              '</div>'
+          )
+          .join('');
+
+        return (
+          '<div class="post-header">' +
+          '<div class="post-avatar">' +
+          getInitials(p.author.displayName) +
+          '</div>' +
+          '<div class="post-meta">' +
+          '<div class="post-author">' +
+          escapeHtml(p.author.displayName) +
+          '</div>' +
+          '<div class="post-time">' +
+          formatTime(p.createdAt) +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '<h3 class="post-title">' +
+          escapeHtml(p.title) +
+          '</h3>' +
+          '<div class="post-body">' +
+          escapeHtml(p.body || '') +
+          '</div>' +
+          fileBlock +
+          '<div class="post-actions">' +
+          '<button class="primary' + (p.liked ? ' liked' : '') + '" data-act="like" data-id="' +
+          p.id +
+          '">' + (p.liked ? '❤️' : '👍') + ' 点赞 (' +
+          (p.likeCount || 0) +
+          ')</button>' +
+          '<button class="btn btn-sm btn-secondary" data-act="toggleComments" data-id="' +
+          p.id +
+          '">💬 评论 (' +
+          comments.length +
+          ')</button>' +
+          '<button class="btn btn-sm btn-secondary report-btn" data-type="post" data-id="' +
+          p.id +
+          '" title="举报作品">🚩 举报</button>' +
+          '</div>' +
+          '<div class="comments-section" id="comments-' +
+          p.id +
+          '" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(218,165,32,0.2);">' +
+          (comments.length > 0 ? '<div style="margin-bottom: 1rem;">' + commentsHtml + '</div>' : '<p class="muted" style="margin-bottom: 1rem;">暂无评论，来说几句吧~</p>') +
+          '<form class="comment-form" data-post="' +
+          p.id +
+          '" style="display: flex; gap: 0.5rem;">' +
+          '<input name="body" placeholder="写下你的评论..." required style="flex: 1;" />' +
+          '<button class="btn" type="submit">发送</button>' +
+          '</form>' +
+          '</div>'
+        );
+      }
+
+      function bindPostEvents() {
+        document.querySelectorAll('[data-act="like"]').forEach((btn) => {
+          btn.onclick = async () => {
+            const id = Number(btn.getAttribute('data-id'));
+            try {
+              await api('/api/posts/' + id + '/like', { method: 'POST' });
+              await load();
+            } catch (e) {
+              alert(e.message);
+            }
+          };
+        });
+
+        document.querySelectorAll('[data-act="toggleComments"]').forEach((btn) => {
+          btn.onclick = () => {
+            const id = btn.getAttribute('data-id');
+            const section = document.getElementById('comments-' + id);
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+          };
+        });
+
+        document.querySelectorAll('.comment-form').forEach((form) => {
+          form.onsubmit = async (e) => {
+            e.preventDefault();
+            const postId = form.getAttribute('data-post');
+            const fd = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            setButtonLoading(submitBtn, true);
+
+            try {
+              await api('/api/posts/' + postId + '/comments', {
+                method: 'POST',
+                body: JSON.stringify({ body: fd.get('body') }),
+              });
+              showToast('评论发表成功！', 'success');
+              await load();
+            } catch (err) {
+              showToast('评论失败：' + err.message, 'error');
+            } finally {
+              setButtonLoading(submitBtn, false);
+            }
+          };
+        });
+
+        document.querySelectorAll('.report-btn').forEach((btn) => {
+          btn.onclick = () => {
+            const type = btn.getAttribute('data-type');
+            const id = btn.getAttribute('data-id');
+            openReport(type, id);
+          };
+        });
+
+        document.querySelectorAll('.preview-file-btn').forEach((btn) => {
+          btn.onclick = () => openPreview(btn.getAttribute('data-url'), btn.getAttribute('data-name'), btn.getAttribute('data-mime'));
+        });
+      }
+
+      function openReport(type, id) {
+        document.querySelector('[name="targetType"]').value = type;
+        document.querySelector('[name="targetId"]').value = id;
+        document.getElementById('reportModal').style.display = 'block';
+        document.getElementById('reportErr').textContent = '';
+        document.querySelector('[name="reason"]').value = '';
+      }
+
+      function closeReport() {
+        document.getElementById('reportModal').style.display = 'none';
+      }
+
+      document.getElementById('openPost').onclick = () => {
+        if (!ensureSpaceUnlocked()) return;
+        document.getElementById('postModal').style.display = 'block';
+        document.getElementById('postErr').textContent = '';
+        document.getElementById('postModal').style.alignItems = 'center';
+        document.getElementById('postModal').style.justifyContent = 'center';
+      };
+
+      document.getElementById('closePost').onclick = () => {
+        document.getElementById('postModal').style.display = 'none';
+        clearPostUploadSelection();
+      };
+
+      document.getElementById('cancelPost').onclick = () => {
+        document.getElementById('postModal').style.display = 'none';
+        clearPostUploadSelection();
+      };
+
+      document.getElementById('postForm').onsubmit = async (e) => {
+        e.preventDefault();
+        if (!ensureSpaceUnlocked()) return;
+        const fd = new FormData(e.target);
+        const file = fd.get('file');
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+
+        setButtonLoading(submitBtn, true);
+        document.getElementById('postErr').textContent = '';
+
+        try {
+          // 如果有文件，使用FormData上传
+          if (file && file.size > 0) {
+            const uploadFd = new FormData();
+            uploadFd.append('title', fd.get('title'));
+            uploadFd.append('body', fd.get('body'));
+            uploadFd.append('file', file);
+
+            const res = await fetch('/api/posts', {
+              method: 'POST',
+              credentials: 'include',
+              body: uploadFd
+            });
+
+            if (!res.ok) {
+              const errData = await res.json();
+              throw new Error(errData.error || '上传失败');
+            }
+          } else {
+            // 没有文件，使用JSON
+            await api('/api/posts', {
+              method: 'POST',
+              body: JSON.stringify({
+                title: fd.get('title'),
+                body: fd.get('body')
+              })
+            });
+          }
+
+          showToast('作品发布成功！', 'success');
+          document.getElementById('postModal').style.display = 'none';
+          e.target.reset();
+          clearPostUploadSelection();
+          await load();
+        } catch (err) {
+          document.getElementById('postErr').textContent = err.message;
+          showToast('发布失败：' + err.message, 'error');
+        } finally {
+          setButtonLoading(submitBtn, false);
+        }
+      };
+
+      document.getElementById('closeReport').onclick = closeReport;
+      document.getElementById('cancelReport').onclick = closeReport;
+
+      document.getElementById('reportForm').onsubmit = async (e) => {
+        e.preventDefault();
+        if (!ensureSpaceUnlocked()) return;
+        const fd = new FormData(e.target);
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+
+        setButtonLoading(submitBtn, true);
+        document.getElementById('reportErr').textContent = '';
+
+        try {
+          await api('/api/report', {
+            method: 'POST',
+            body: JSON.stringify({
+              targetType: fd.get('targetType'),
+              targetId: Number(fd.get('targetId')),
+              reason: fd.get('reason'),
+            }),
+          });
+          closeReport();
+          showToast('举报已提交，教师会尽快处理。', 'success');
+        } catch (err) {
+          document.getElementById('reportErr').textContent = err.message;
+          showToast('举报失败：' + err.message, 'error');
+        } finally {
+          setButtonLoading(submitBtn, false);
+        }
+      };
+
+      document.getElementById('refresh').onclick = load;
+
+      function clearPostUploadSelection() {
+        const fileInput = document.getElementById('postFileInput');
+        fileInput.value = '';
+        updatePostUploadState();
+      }
+
+      function updatePostUploadState() {
+        const file = document.getElementById('postFileInput').files[0];
+        const previewBtn = document.getElementById('previewPostUpload');
+        const clearBtn = document.getElementById('clearPostUpload');
+        const fileNameEl = document.getElementById('postFileName');
+        if (file) {
+          previewBtn.disabled = false;
+          clearBtn.disabled = false;
+          fileNameEl.textContent = `已选择：${file.name}`;
+        } else {
+          previewBtn.disabled = true;
+          clearBtn.disabled = true;
+          fileNameEl.textContent = '';
+        }
+      }
+
+      async function openPreview(url, fileName, mime) {
+        const modal = document.getElementById('filePreviewModal');
+        const body = document.getElementById('previewBody');
+        const title = document.getElementById('previewTitle');
+        title.textContent = fileName || '附件预览';
+        body.innerHTML = '<p class="muted">正在加载预览...</p>';
+        modal.style.display = 'block';
+
+        const lowerName = String(fileName || '').toLowerCase();
+        const type = String(mime || '').toLowerCase();
+        const fullUrl = new URL(url, window.location.origin).toString();
+        currentPreviewUrl = fullUrl;
+
+        if (/\.(png|jpg|jpeg|gif|webp)$/i.test(lowerName) || type.startsWith('image/')) {
+          body.innerHTML = '<img src="' + escapeHtml(url) + '" alt="' + escapeHtml(fileName || '') + '" style="max-width:100%; height:auto; border-radius:8px;" />';
+          return;
+        }
+
+        if (/\.pdf$/i.test(lowerName) || type === 'application/pdf') {
+          body.innerHTML = '<iframe src="' + escapeHtml(url) + '" style="width:100%; height:68vh; border:none; border-radius:8px;"></iframe>';
+          return;
+        }
+
+        if (/\.(txt|md|log|csv|json)$/i.test(lowerName) || type.startsWith('text/')) {
+          try {
+            const res = await fetch(url, { credentials: 'include' });
+            const text = await res.text();
+            body.innerHTML = '<pre style="white-space:pre-wrap; word-break:break-word; background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:0.75rem; margin:0;">' + escapeHtml(text) + '</pre>';
+          } catch {
+            body.innerHTML = '<p class="err">文本预览失败，请下载查看。</p>';
+          }
+          return;
+        }
+
+        if (/\.(doc|docx)$/i.test(lowerName) || type.includes('word') || type.includes('officedocument')) {
+          const officeUrl = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fullUrl);
+          body.innerHTML =
+            '<p class="muted" style="margin-bottom:0.75rem;">Word 预览依赖 Office 在线服务；若网络受限，可直接下载查看。</p>' +
+            '<iframe src="' + escapeHtml(officeUrl) + '" style="width:100%; height:62vh; border:none; border-radius:8px;"></iframe>';
+          return;
+        }
+
+        body.innerHTML = '<p class="muted">该文件类型暂不支持在线预览，请下载查看。</p>';
+      }
+
+      function closePreviewModal() {
+        document.getElementById('filePreviewModal').style.display = 'none';
+        document.getElementById('previewBody').innerHTML = '';
+        currentPreviewUrl = '';
+      }
+
+      document.getElementById('postFileInput').addEventListener('change', updatePostUploadState);
+      document.getElementById('clearPostUpload').onclick = clearPostUploadSelection;
+
+      document.getElementById('previewPostUpload').onclick = () => {
+        const file = document.getElementById('postFileInput').files[0];
+        if (!file) return;
+        const localUrl = URL.createObjectURL(file);
+        openPreview(localUrl, file.name, file.type || '');
+      };
+
+      document.getElementById('closePreview').onclick = closePreviewModal;
+      document.getElementById('previewDownload').onclick = () => {
+        if (!currentPreviewUrl) return;
+        const a = document.createElement('a');
+        a.href = currentPreviewUrl;
+        a.download = '';
+        a.click();
+      };
+
+      function escapeHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = s == null ? '' : String(s);
+        return d.innerHTML;
+      }
+
+      function formatTime(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        return d.toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+
+      function getInitials(name) {
+        if (!name) return '?';
+        const parts = String(name).trim().split(/\s+/);
+        return parts.map((p) => p[0]).join('').slice(0, 2).toUpperCase();
+      }
+
+      load();
+    </script>
+  </body>
+</html>

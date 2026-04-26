@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>文化书信 · 中国优秀传统文化分享会</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/loading.css" />
+    <style>
+      :root {
+        --primary: #8B4513;
+        --primary-light: #D2691E;
+        --primary-dark: #654321;
+        --primary-gradient: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+      }
+      .brand::before {
+        content: "🏮";
+      }
+      .nav a.active {
+        color: var(--primary);
+        background: rgba(139, 69, 19, 0.1);
+      }
+      .nav a.active::after {
+        background: var(--primary);
+      }
+      .btn {
+        background: var(--primary-gradient);
+      }
+      .btn:hover {
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+      }
+      .mail-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        width: 100%;
+        border-bottom: 2px solid rgba(139, 69, 19, 0.1);
+      }
+      .mail-tabs button {
+        padding: 0.875rem 1.5rem;
+        border: none;
+        border-radius: 10px 10px 0 0;
+        background: transparent;
+        color: #6b7280;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        margin-bottom: -2px;
+        border-bottom: 3px solid transparent;
+      }
+      .mail-tabs button:hover {
+        color: var(--primary);
+        background: rgba(139, 69, 19, 0.05);
+      }
+      .mail-tabs button.active {
+        color: var(--primary);
+        background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(210, 105, 30, 0.05) 100%);
+        border-bottom: 3px solid var(--primary);
+        font-weight: 600;
+      }
+      .mail-item {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(139, 69, 19, 0.08);
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+      }
+      .mail-item:hover {
+        background: rgba(139, 69, 19, 0.03);
+      }
+      .mail-item.unread {
+        border-left: 3px solid #D2691E;
+        background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(210, 105, 30, 0.02) 100%);
+      }
+      .mail-item.unread .mail-subject {
+        font-weight: 700;
+        color: #5D3A1A;
+      }
+      .mail-subject {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.25rem;
+      }
+      .mail-meta {
+        font-size: 0.8125rem;
+        color: #9ca3af;
+      }
+      .mail-layout {
+        display: flex;
+        gap: 1.5rem;
+        align-items: stretch;
+        justify-content: center;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+      }
+      .mail-main {
+        flex: 0 1 1400px;
+        min-height: 650px;
+      }
+      .tips-sidebar {
+        flex: 0 0 220px;
+        background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(210, 105, 30, 0.02) 100%);
+        border: 1px solid rgba(139, 69, 19, 0.15);
+        border-radius: 12px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+      }
+      .tips-sidebar h3 {
+        color: #5D3A1A;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+      .tips-sidebar .tips-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .tips-sidebar .tip-item {
+        background: white;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 0.75rem;
+        flex: 1;
+      }
+      .tips-sidebar .tip-item:last-child {
+        margin-bottom: 0;
+      }
+      .tips-sidebar .tip-item h4 {
+        color: #8B4513;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+      }
+      .tips-sidebar .tip-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .tips-sidebar .tip-head h4 {
+        margin: 0;
+      }
+      .tips-sidebar .tip-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+      }
+      .tips-sidebar .tip-item p {
+        font-size: 0.8125rem;
+        color: #6b7280;
+        margin: 0;
+        line-height: 1.5;
+      }
+      @media (max-width: 1700px) {
+        .mail-main {
+          flex: 1 1 auto;
+          max-width: calc(100% - 240px);
+        }
+      }
+      @media (max-width: 1200px) {
+        .mail-layout {
+          flex-direction: column;
+          align-items: center;
+        }
+        .mail-main {
+          flex: 0 0 auto;
+          width: 100%;
+          max-width: 100%;
+        }
+        .tips-sidebar {
+          flex: 0 0 auto;
+          width: 100%;
+          max-width: 100%;
+        }
+        .tips-sidebar .tips-content {
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+        }
+        .tips-sidebar .tip-item {
+          flex: 1 1 calc(50% - 0.375rem);
+          margin-bottom: 0;
+        }
+      }
+
+      body.compose-no-scroll {
+        overflow: hidden;
+      }
+      body.compose-no-scroll #composeView {
+        height: 640px;
+        max-height: 640px;
+        overflow: hidden;
+        padding: 0.75rem;
+      }
+      body.compose-no-scroll #composeView > div:first-child {
+        margin-bottom: 0.5rem !important;
+      }
+      body.compose-no-scroll #composeForm {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas:
+          "recipient body"
+          "subject body"
+          "attach body"
+          "actions actions"
+          "err err";
+        grid-template-rows: auto auto 1fr auto auto;
+        gap: 0.5rem 0.75rem;
+        height: calc(100% - 2.2rem);
+        align-content: stretch;
+      }
+      body.compose-no-scroll #recipientGroup {
+        grid-area: recipient;
+        display: flex;
+        flex-direction: column;
+      }
+      body.compose-no-scroll #subjectGroup { grid-area: subject; }
+      body.compose-no-scroll #bodyGroup { grid-area: body; }
+      body.compose-no-scroll #attachGroup { grid-area: attach; }
+      body.compose-no-scroll #composeActions { grid-area: actions; }
+      body.compose-no-scroll #sendErr { grid-area: err; margin: 0; }
+      body.compose-no-scroll #composeForm .form-group {
+        margin-bottom: 0 !important;
+      }
+      body.compose-no-scroll #composeForm label {
+        margin-bottom: 0.3rem;
+        font-size: 0.84rem;
+      }
+      body.compose-no-scroll #recipientSelect {
+        min-height: 180px !important;
+        height: 180px;
+      }
+      body.compose-no-scroll #composeForm input,
+      body.compose-no-scroll #composeForm select,
+      body.compose-no-scroll #composeForm textarea {
+        padding-top: 0.55rem;
+        padding-bottom: 0.55rem;
+      }
+      body.compose-no-scroll #composeForm textarea {
+        min-height: 0;
+        height: auto;
+        resize: none;
+      }
+      body.compose-no-scroll #bodyGroup {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      body.compose-no-scroll #bodyGroup textarea {
+        flex: 1;
+        min-height: 0;
+      }
+      body.compose-no-scroll #composeForm .muted {
+        margin-top: 0.25rem !important;
+        margin-bottom: 0 !important;
+        font-size: 0.75rem !important;
+      }
+      body.compose-no-scroll #composeActions {
+        margin-top: 0.15rem;
+        justify-content: flex-end;
+        align-self: end;
+      }
+
+      @media (max-width: 1200px) {
+        body.compose-no-scroll #composeView {
+          height: 540px;
+          max-height: 540px;
+        }
+        body.compose-no-scroll #recipientSelect {
+          min-height: 150px !important;
+          height: 150px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body.compose-no-scroll #composeView {
+          height: 500px;
+          max-height: 500px;
+        }
+        body.compose-no-scroll #composeForm {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "recipient"
+            "subject"
+            "body"
+            "attach"
+            "actions"
+            "err";
+          grid-template-rows: auto auto 1fr auto auto auto;
+        }
+        body.compose-no-scroll #recipientSelect {
+          min-height: 120px !important;
+          height: 120px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="topbar">
+        <div class="brand">中国优秀传统文化分享会</div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+
+      <div class="mail-layout">
+        <div class="card mail-main" style="padding: 0; overflow: hidden; margin: 0;">
+          <div class="card-header" style="padding: 1.25rem 1.5rem; margin-bottom: 0; background: linear-gradient(135deg, rgba(139, 69, 19, 0.08) 0%, rgba(210, 105, 30, 0.05) 100%); border-bottom: 1px solid rgba(139, 69, 19, 0.15);">
+            <div>
+              <h1 style="margin-bottom: 0.25rem;">📜 文化书信</h1>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.875rem;">用传统书信礼仪分享文化心得 · 我的地址：<span id="myEmail"></span></p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary" type="button" id="refresh">🔄 刷新</button>
+              <button class="btn" type="button" id="compose">✉️ 写书信</button>
+            </div>
+          </div>
+
+          <div style="padding: 1rem 1.5rem 0;">
+            <div class="mail-tabs" id="tabs">
+              <button class="active" data-view="inbox">📥 收件箱</button>
+              <button data-view="read">📖 已读</button>
+              <button data-view="sent">📤 已发送</button>
+            </div>
+          </div>
+
+          <div id="list" style="max-height: 500px; overflow-y: auto;"></div>
+
+          <div id="empty" class="empty-state" style="display: none; padding: 3rem 2rem;">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-title">暂无书信</div>
+            <p class="muted">点击"写书信"给同学发送第一封文化分享信吧</p>
+          </div>
+
+          <div id="readView" style="display: none; padding: 1.5rem;">
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+              <button class="btn btn-secondary btn-sm" type="button" id="backToList">← 返回列表</button>
+              <button class="btn btn-secondary btn-sm" type="button" id="replyBtn">↩️ 回复</button>
+            </div>
+            <div style="background: linear-gradient(135deg, rgba(139, 69, 19, 0.03) 0%, rgba(210, 105, 30, 0.01) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(139, 69, 19, 0.1);">
+              <h2 id="rSubject" style="margin: 0 0 1rem 0; color: #5D3A1A; font-size: 1.25rem; border-bottom: 1px solid rgba(139, 69, 19, 0.1); padding-bottom: 0.75rem;"></h2>
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; font-size: 0.875rem; color: #6b7280;">
+                <div><strong>发件人：</strong><span id="rFrom"></span></div>
+                <div><strong>时间：</strong><span id="rTime"></span></div>
+              </div>
+              <div id="rRecipients" style="margin-bottom: 1rem; font-size: 0.875rem; color: #6b7280;"></div>
+              <div id="rBody" style="line-height: 1.8; white-space: pre-wrap; color: #374151; background: white; padding: 1rem; border-radius: 8px; min-height: 150px;"></div>
+              <div id="rAttach" style="margin-top: 1rem;"></div>
+            </div>
+          </div>
+
+          <div id="composeView" style="display: none; padding: 1.5rem;">
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+              <button class="btn btn-secondary btn-sm" type="button" id="cancelCompose">← 取消</button>
+            </div>
+            <form id="composeForm">
+              <div class="form-group" id="recipientGroup">
+                <label>收件人（点击选择，可多选）</label>
+                <select name="to" id="recipientSelect" multiple required style="min-height: 120px;">
+                  <option value="">正在加载联系人...</option>
+                </select>
+                <p class="muted" style="font-size: 0.8125rem; margin-top: 0.5rem;">按住 Ctrl 键可多选</p>
+              </div>
+              <div class="form-group" id="subjectGroup">
+                <label>主题</label>
+                <input name="subject" placeholder="例如：分享我的春节习俗观察" required />
+              </div>
+              <div class="form-group" id="bodyGroup">
+                <label>正文</label>
+                <textarea name="body" rows="6" placeholder="某某同学你好：&#10;&#10;我想和你分享我最近学习传统文化的心得...&#10;&#10;祝好！&#10;你的名字" required></textarea>
+              </div>
+              <div class="form-group" id="attachGroup">
+                <label>附件（可选）</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                  <input type="file" id="mailFileInput" name="file" accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.doc,.docx" />
+                  <button class="btn btn-secondary btn-sm" id="previewMailUpload" type="button" disabled>预览附件</button>
+                  <button class="btn btn-secondary btn-sm" id="clearMailUpload" type="button" disabled>清除附件</button>
+                </div>
+                <p class="muted" id="mailFileName" style="font-size: 0.8125rem; margin-top: 0.25rem;"></p>
+              </div>
+              <div id="composeActions" style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" type="button" id="cancelCompose2">取消</button>
+                <button class="btn" type="submit">📨 发送书信</button>
+              </div>
+              <p id="sendErr" class="err"></p>
+            </form>
+          </div>
+
+          <p id="err" class="err" style="margin: 1rem 1.5rem;"></p>
+        </div>
+
+        <aside class="tips-sidebar">
+          <h3>💡 传统书信礼仪提示</h3>
+          <div class="tips-content">
+            <div class="tip-item">
+              <div class="tip-head"><span class="tip-icon">👋</span><h4>开头问候</h4></div>
+              <p>使用"某某同学你好"、"见字如面"等传统问候语</p>
+            </div>
+            <div class="tip-item">
+              <div class="tip-head"><span class="tip-icon">✍️</span><h4>正文表达</h4></div>
+              <p>条理清晰，用词得体，体现对收信人的尊重</p>
+            </div>
+            <div class="tip-item">
+              <div class="tip-head"><span class="tip-icon">🌸</span><h4>结尾祝福</h4></div>
+              <p>使用"祝好"、"顺祝学业进步"等祝福语</p>
+            </div>
+            <div class="tip-item">
+              <div class="tip-head"><span class="tip-icon">📛</span><h4>署名规范</h4></div>
+              <p>使用真实姓名，体现诚信品质</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="filePreviewModal" class="modal" style="display:none; position: fixed; inset: 0; z-index: 1200;">
+      <div style="position:absolute; inset:0; background: rgba(0,0,0,0.5);"></div>
+      <div style="position:absolute; top:50%; left:50%; transform: translate(-50%, -50%); width:min(92vw, 980px); max-height:86vh; background:white; border-radius:12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display:flex; flex-direction:column; overflow:hidden;">
+        <div style="padding:0.9rem 1rem; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; gap:0.75rem;">
+          <strong id="previewTitle" style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></strong>
+          <button id="previewDownload" class="btn btn-secondary btn-sm" type="button">下载</button>
+          <button id="closePreview" class="btn btn-secondary btn-sm" type="button">关闭</button>
+        </div>
+        <div id="previewBody" style="padding:1rem; overflow:auto; min-height:240px;"></div>
+      </div>
+    </div>
+
+    <script src="/vendor/socket.io.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script>
+      (async () => {
+        const user = await getMe();
+        requireAuthPage(user);
+        // 直接使用服务器返回的 email 字段
+        const email = user.email || '未知地址';
+        document.getElementById('myEmail').textContent = email;
+        document.getElementById('nav').innerHTML =
+          '<a href="/dashboard.html">大厅</a>' +
+          '<a href="/mail.html" class="active">书信</a>' +
+          '<a href="/chat.html">茶话</a>' +
+          '<a href="/space.html">展厅</a>' +
+          '<a href="/civics.html">礼仪</a>' +
+          '<a href="/evaluate.html">评价</a>' +
+          '<a href="#" id="logout">退出</a>';
+        document.getElementById('logout').onclick = async (e) => {
+          e.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          location.href = '/index.html';
+        };
+
+        initTaskControlRealtime();
+        onTaskControlChange((controls) => {
+          setMailLocked(isTaskLockedByControl('mail', controls));
+        });
+      })();
+
+      let currentView = 'inbox';
+      let mails = [];
+      let readingId = null;
+      let currentPreviewUrl = '';
+      let mailTaskLocked = false;
+
+      function setComposeNoScroll(enabled) {
+        document.body.classList.toggle('compose-no-scroll', !!enabled);
+      }
+
+      function setRefreshVisible(visible) {
+        const refreshBtn = document.getElementById('refresh');
+        refreshBtn.style.display = visible ? 'inline-flex' : 'none';
+      }
+
+      function ensureMailUnlocked() {
+        if (!mailTaskLocked) return true;
+        document.getElementById('err').textContent = '第1课（邮件交流）已被教师锁定，暂不可操作';
+        return false;
+      }
+
+      function setMailLocked(locked) {
+        const wasLocked = mailTaskLocked;
+        mailTaskLocked = !!locked;
+        const reason = '第1课（邮件交流）已锁定';
+        applyTaskControlToSelectors(
+          [
+            '#compose',
+            '#refresh',
+            '#tabs button',
+            '#replyBtn',
+            '#composeForm button',
+            '#composeForm input',
+            '#composeForm textarea',
+            '#composeForm select',
+            '#mailFileInput',
+            '.mail-item',
+          ],
+          mailTaskLocked,
+          reason
+        );
+
+        if (mailTaskLocked) {
+          setComposeNoScroll(false);
+          document.getElementById('composeView').style.display = 'none';
+          document.getElementById('readView').style.display = 'none';
+          document.getElementById('tabs').parentElement.style.display = 'block';
+          setRefreshVisible(true);
+          document.getElementById('err').textContent = '第1课（邮件交流）已被教师锁定，暂不可操作';
+        } else if (document.getElementById('err').textContent.includes('第1课（邮件交流）')) {
+          document.getElementById('err').textContent = '';
+        }
+
+        if (wasLocked && !mailTaskLocked) {
+          if (currentView === 'sent') loadSent();
+          else load();
+        }
+      }
+
+      async function load() {
+        if (mailTaskLocked) {
+          document.getElementById('list').innerHTML = '';
+          return;
+        }
+        document.getElementById('err').textContent = '';
+        try {
+          const data = await api('/api/mail/inbox');
+          mails = data.items || [];
+          renderList();
+        } catch (e) {
+          document.getElementById('err').textContent = e.message;
+        }
+      }
+
+      function renderList() {
+        const list = document.getElementById('list');
+        const filtered = mails.filter((m) => {
+          if (currentView === 'inbox') return !m.readAt;
+          if (currentView === 'read') return m.readAt;
+          return false;
+        });
+
+        if (filtered.length === 0) {
+          document.getElementById('empty').style.display = 'block';
+          list.style.display = 'none';
+        } else {
+          document.getElementById('empty').style.display = 'none';
+          list.style.display = 'block';
+          list.innerHTML = filtered
+            .map((m) =>
+              '<div class="mail-item ' +
+              (!m.readAt ? 'unread' : '') +
+              '" data-id="' +
+              m.id +
+              '">' +
+              '<div class="mail-subject">' +
+              escapeHtml(m.subject) +
+              '</div>' +
+              '<div class="mail-meta">' +
+              '发件人：' +
+              escapeHtml(m.senderName) +
+              ' · ' +
+              formatTime(m.createdAt) +
+              '</div>' +
+              '</div>'
+            )
+            .join('');
+
+          list.querySelectorAll('.mail-item').forEach((el) => {
+            el.onclick = () => openMail(Number(el.getAttribute('data-id')));
+          });
+
+          setMailLocked(mailTaskLocked);
+        }
+      }
+
+      async function openMail(id) {
+        if (!ensureMailUnlocked()) return;
+        setComposeNoScroll(false);
+        readingId = id;
+        try {
+          const detail = await api('/api/mail/' + id);
+          document.getElementById('list').style.display = 'none';
+          document.getElementById('empty').style.display = 'none';
+          document.getElementById('tabs').parentElement.style.display = 'none';
+          document.getElementById('readView').style.display = 'block';
+          document.getElementById('composeView').style.display = 'none';
+          setRefreshVisible(false);
+          document.getElementById('rSubject').textContent = detail.subject;
+          document.getElementById('rFrom').textContent = detail.sender.displayName + ' (' + detail.sender.email + ')';
+          document.getElementById('rTime').textContent = formatTime(detail.createdAt);
+          document.getElementById('rBody').textContent = detail.body || '';
+
+          // 显示收件人信息
+          const toRecipients = detail.recipients.filter(r => r.kind === 'to')
+            .map(r => r.displayName + ' (' + r.email + ')').join(', ');
+          const ccRecipients = detail.recipients.filter(r => r.kind === 'cc')
+            .map(r => r.displayName + ' (' + r.email + ')').join(', ');
+
+          let recipientsHtml = '';
+          if (toRecipients) {
+            recipientsHtml += '<div><strong>收件人：</strong>' + escapeHtml(toRecipients) + '</div>';
+          }
+          if (ccRecipients) {
+            recipientsHtml += '<div style="margin-top: 0.5rem;"><strong>抄送：</strong>' + escapeHtml(ccRecipients) + '</div>';
+          }
+          document.getElementById('rRecipients').innerHTML = recipientsHtml;
+          document.getElementById('rAttach').innerHTML = renderAttachment(detail.attachment);
+          bindAttachmentPreviewEvents();
+        } catch (e) {
+          document.getElementById('err').textContent = e.message;
+        }
+      }
+
+      async function loadSent() {
+        if (mailTaskLocked) {
+          document.getElementById('list').innerHTML = '';
+          return;
+        }
+        document.getElementById('err').textContent = '';
+        try {
+          const data = await api('/api/mail/sent');
+          mails = data.items || [];
+          renderSentList();
+        } catch (e) {
+          document.getElementById('err').textContent = e.message;
+        }
+      }
+
+      function renderSentList() {
+        const list = document.getElementById('list');
+        if (mails.length === 0) {
+          document.getElementById('empty').style.display = 'block';
+          list.style.display = 'none';
+        } else {
+          document.getElementById('empty').style.display = 'none';
+          list.style.display = 'block';
+          list.innerHTML = mails
+            .map((m) =>
+              '<div class="mail-item" data-id="' +
+              m.id +
+              '">' +
+              '<div class="mail-subject">' +
+              escapeHtml(m.subject) +
+              '</div>' +
+              '<div class="mail-meta">' +
+              formatTime(m.createdAt) +
+              '</div>' +
+              '</div>'
+            )
+            .join('');
+
+          list.querySelectorAll('.mail-item').forEach((el) => {
+            el.onclick = () => openSentMail(Number(el.getAttribute('data-id')));
+          });
+
+          setMailLocked(mailTaskLocked);
+        }
+      }
+
+      async function openSentMail(id) {
+        if (!ensureMailUnlocked()) return;
+        setComposeNoScroll(false);
+        readingId = id;
+        try {
+          const detail = await api('/api/mail/' + id);
+          document.getElementById('list').style.display = 'none';
+          document.getElementById('empty').style.display = 'none';
+          document.getElementById('tabs').parentElement.style.display = 'none';
+          document.getElementById('readView').style.display = 'block';
+          document.getElementById('composeView').style.display = 'none';
+          setRefreshVisible(false);
+          document.getElementById('rSubject').textContent = detail.subject;
+          document.getElementById('rFrom').textContent = detail.sender.displayName + ' (' + detail.sender.email + ')';
+          document.getElementById('rTime').textContent = formatTime(detail.createdAt);
+          document.getElementById('rBody').textContent = detail.body || '';
+
+          // 显示收件人信息
+          const toRecipients = detail.recipients.filter(r => r.kind === 'to')
+            .map(r => r.displayName + ' (' + r.email + ')').join(', ');
+          const ccRecipients = detail.recipients.filter(r => r.kind === 'cc')
+            .map(r => r.displayName + ' (' + r.email + ')').join(', ');
+
+          let recipientsHtml = '';
+          if (toRecipients) {
+            recipientsHtml += '<div><strong>收件人：</strong>' + escapeHtml(toRecipients) + '</div>';
+          }
+          if (ccRecipients) {
+            recipientsHtml += '<div style="margin-top: 0.5rem;"><strong>抄送：</strong>' + escapeHtml(ccRecipients) + '</div>';
+          }
+          document.getElementById('rRecipients').innerHTML = recipientsHtml;
+          document.getElementById('rAttach').innerHTML = renderAttachment(detail.attachment);
+          bindAttachmentPreviewEvents();
+        } catch (e) {
+          document.getElementById('err').textContent = e.message;
+        }
+      }
+
+      function backToList() {
+        setComposeNoScroll(false);
+        document.getElementById('readView').style.display = 'none';
+        document.getElementById('composeView').style.display = 'none';
+        document.getElementById('tabs').parentElement.style.display = 'block';
+        setRefreshVisible(true);
+        if (currentView === 'sent') {
+          loadSent();
+        } else {
+          load();
+        }
+        readingId = null;
+      }
+
+      let allUsers = [];
+
+      async function loadUsers() {
+        try {
+          const data = await api('/api/users');
+          allUsers = data.users || [];
+          const select = document.getElementById('recipientSelect');
+          const currentUser = await getMe();
+          // 过滤掉当前用户
+          const otherUsers = allUsers.filter(u => u.username !== currentUser.username);
+          if (otherUsers.length === 0) {
+            select.innerHTML = '<option value="" disabled>暂无其他用户</option>';
+          } else {
+            select.innerHTML = otherUsers.map(u =>
+              `<option value="${escapeHtml(u.username)}">${escapeHtml(u.displayName)} (${escapeHtml(u.email)})</option>`
+            ).join('');
+          }
+        } catch (e) {
+          console.error('加载用户列表失败:', e);
+          document.getElementById('recipientSelect').innerHTML = '<option value="" disabled>加载失败</option>';
+        }
+      }
+
+      function openCompose(replyTo) {
+        if (!ensureMailUnlocked()) return;
+        setComposeNoScroll(true);
+        document.getElementById('list').style.display = 'none';
+        document.getElementById('empty').style.display = 'none';
+        document.getElementById('tabs').parentElement.style.display = 'none';
+        document.getElementById('readView').style.display = 'none';
+        document.getElementById('composeView').style.display = 'block';
+        setRefreshVisible(false);
+        document.getElementById('sendErr').textContent = '';
+        const form = document.getElementById('composeForm');
+        form.reset();
+        clearMailUploadSelection();
+        // 加载用户列表
+        loadUsers();
+      }
+
+      document.getElementById('tabs').addEventListener('click', (e) => {
+        if (!ensureMailUnlocked()) return;
+        if (e.target.tagName === 'BUTTON') {
+          currentView = e.target.getAttribute('data-view');
+          document.querySelectorAll('.mail-tabs button').forEach((b) => b.classList.remove('active'));
+          e.target.classList.add('active');
+          if (currentView === 'sent') {
+            loadSent();
+          } else {
+            load();
+          }
+        }
+      });
+
+      document.getElementById('refresh').onclick = () => {
+        if (!ensureMailUnlocked()) return;
+        if (currentView === 'sent') {
+          loadSent();
+        } else {
+          load();
+        }
+      };
+      document.getElementById('compose').onclick = () => openCompose();
+      document.getElementById('backToList').onclick = backToList;
+      document.getElementById('cancelCompose').onclick = backToList;
+      document.getElementById('cancelCompose2').onclick = backToList;
+      document.getElementById('replyBtn').onclick = () => openCompose(readingId);
+
+      document.getElementById('composeForm').onsubmit = async (e) => {
+        e.preventDefault();
+        if (!ensureMailUnlocked()) return;
+        const fd = new FormData(e.target);
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+
+        // 获取多选收件人，过滤空值
+        const select = document.getElementById('recipientSelect');
+        const toValues = fd.getAll('to').map(v => String(v || '').trim()).filter(Boolean);
+        const selectedOptions = Array.from(select.options || []).filter((opt) => opt.selected && String(opt.value || '').trim());
+        const fallbackValues = selectedOptions.map((opt) => String(opt.value || '').trim()).filter(Boolean);
+        const selectValue = String(select.value || '').trim();
+        const indexValue =
+          select.selectedIndex >= 0 && select.options[select.selectedIndex]
+            ? String(select.options[select.selectedIndex].value || '').trim()
+            : '';
+        const mergedValues = Array.from(new Set([
+          ...(toValues || []),
+          ...(fallbackValues || []),
+          ...(selectValue ? [selectValue] : []),
+          ...(indexValue ? [indexValue] : []),
+        ]));
+        const toList = mergedValues.join(',');
+
+        if (!toList || selectedOptions.length === 0) {
+          showToast('请选择收件人', 'warning');
+          return;
+        }
+
+        const payload = {
+          to: toList,
+          subject: fd.get('subject'),
+          body: fd.get('body'),
+        };
+        const file = fd.get('file');
+
+        setButtonLoading(submitBtn, true);
+        document.getElementById('sendErr').textContent = '';
+
+        try {
+          if (file && file.size > 0) {
+            const uploadFd = new FormData();
+            for (const recipient of mergedValues) {
+              uploadFd.append('to', recipient);
+            }
+            uploadFd.append('subject', payload.subject);
+            uploadFd.append('body', payload.body);
+            uploadFd.append('file', file);
+
+            const res = await fetch('/api/mail/send', {
+              method: 'POST',
+              credentials: 'include',
+              body: uploadFd,
+            });
+            const raw = await res.text();
+            let data = {};
+            try {
+              data = raw ? JSON.parse(raw) : {};
+            } catch {
+              data = { error: raw || '发送失败' };
+            }
+            if (!res.ok) throw new Error(data.error || '发送失败');
+          } else {
+            await api('/api/mail/send', {
+              method: 'POST',
+              body: JSON.stringify(payload),
+            });
+          }
+          showToast('书信发送成功！', 'success');
+          backToList();
+        } catch (err) {
+          document.getElementById('sendErr').textContent = err.message;
+          showToast('发送失败：' + err.message, 'error');
+        } finally {
+          setButtonLoading(submitBtn, false);
+        }
+      };
+
+      function renderAttachment(attachment) {
+        if (!attachment || !attachment.fileUrl) return '';
+        return (
+          '<div style="margin-top: 1rem; padding: 0.75rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;">' +
+          '<div style="font-size:0.875rem; color:#6b7280; margin-bottom:0.5rem;"><strong>附件：</strong>' + escapeHtml(attachment.fileName || '未命名文件') + '</div>' +
+          '<div style="display:flex; gap:0.5rem; flex-wrap: wrap;">' +
+          '<button class="btn btn-secondary btn-sm preview-attachment-btn" type="button" data-url="' + escapeHtml(attachment.fileUrl) + '" data-name="' + escapeHtml(attachment.fileName || '') + '" data-mime="' + escapeHtml(attachment.mime || '') + '">预览附件</button>' +
+          '<a class="btn btn-secondary btn-sm" href="' + escapeHtml(attachment.fileUrl) + '" download="' + escapeHtml(attachment.fileName || '') + '">下载附件</a>' +
+          '</div>' +
+          '</div>'
+        );
+      }
+
+      function bindAttachmentPreviewEvents() {
+        document.querySelectorAll('.preview-attachment-btn').forEach((btn) => {
+          btn.onclick = () => openPreview(btn.getAttribute('data-url'), btn.getAttribute('data-name'), btn.getAttribute('data-mime'));
+        });
+      }
+
+      async function openPreview(url, fileName, mime) {
+        const modal = document.getElementById('filePreviewModal');
+        const body = document.getElementById('previewBody');
+        const title = document.getElementById('previewTitle');
+        title.textContent = fileName || '附件预览';
+        body.innerHTML = '<p class="muted">正在加载预览...</p>';
+        modal.style.display = 'block';
+
+        const lowerName = String(fileName || '').toLowerCase();
+        const type = String(mime || '').toLowerCase();
+        const fullUrl = new URL(url, window.location.origin).toString();
+        currentPreviewUrl = fullUrl;
+
+        if (/\.(png|jpg|jpeg|gif|webp)$/i.test(lowerName) || type.startsWith('image/')) {
+          body.innerHTML = '<img src="' + escapeHtml(url) + '" alt="' + escapeHtml(fileName || '') + '" style="max-width:100%; height:auto; border-radius:8px;" />';
+          return;
+        }
+
+        if (/\.pdf$/i.test(lowerName) || type === 'application/pdf') {
+          body.innerHTML = '<iframe src="' + escapeHtml(url) + '" style="width:100%; height:68vh; border:none; border-radius:8px;"></iframe>';
+          return;
+        }
+
+        if (/\.(txt|md|log|csv|json)$/i.test(lowerName) || type.startsWith('text/')) {
+          try {
+            const res = await fetch(url, { credentials: 'include' });
+            const text = await res.text();
+            body.innerHTML = '<pre style="white-space:pre-wrap; word-break:break-word; background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:0.75rem; margin:0;">' + escapeHtml(text) + '</pre>';
+          } catch {
+            body.innerHTML = '<p class="err">文本预览失败，请下载查看。</p>';
+          }
+          return;
+        }
+
+        if (/\.(doc|docx)$/i.test(lowerName) || type.includes('word') || type.includes('officedocument')) {
+          const officeUrl = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fullUrl);
+          body.innerHTML =
+            '<p class="muted" style="margin-bottom:0.75rem;">Word 预览依赖 Office 在线服务；若网络受限，可直接下载查看。</p>' +
+            '<iframe src="' + escapeHtml(officeUrl) + '" style="width:100%; height:62vh; border:none; border-radius:8px;"></iframe>';
+          return;
+        }
+
+        body.innerHTML = '<p class="muted">该文件类型暂不支持在线预览，请下载查看。</p>';
+      }
+
+      function closePreviewModal() {
+        document.getElementById('filePreviewModal').style.display = 'none';
+        document.getElementById('previewBody').innerHTML = '';
+        currentPreviewUrl = '';
+      }
+
+      function clearMailUploadSelection() {
+        const fileInput = document.getElementById('mailFileInput');
+        fileInput.value = '';
+        updateMailUploadState();
+      }
+
+      function updateMailUploadState() {
+        const file = document.getElementById('mailFileInput').files[0];
+        const previewBtn = document.getElementById('previewMailUpload');
+        const clearBtn = document.getElementById('clearMailUpload');
+        const fileNameEl = document.getElementById('mailFileName');
+        if (file) {
+          previewBtn.disabled = false;
+          clearBtn.disabled = false;
+          fileNameEl.textContent = `已选择：${file.name}`;
+        } else {
+          previewBtn.disabled = true;
+          clearBtn.disabled = true;
+          fileNameEl.textContent = '';
+        }
+      }
+
+      document.getElementById('mailFileInput').addEventListener('change', updateMailUploadState);
+      document.getElementById('clearMailUpload').onclick = clearMailUploadSelection;
+
+      document.getElementById('previewMailUpload').onclick = () => {
+        const file = document.getElementById('mailFileInput').files[0];
+        if (!file) return;
+        const localUrl = URL.createObjectURL(file);
+        openPreview(localUrl, file.name, file.type || '');
+      };
+
+      document.getElementById('closePreview').onclick = closePreviewModal;
+      document.getElementById('previewDownload').onclick = () => {
+        if (!currentPreviewUrl) return;
+        const a = document.createElement('a');
+        a.href = currentPreviewUrl;
+        a.download = '';
+        a.click();
+      };
+
+      function escapeHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = s == null ? '' : String(s);
+        return d.innerHTML;
+      }
+
+      function formatTime(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        return d.toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+
+      setRefreshVisible(true);
+      load();
+    </script>
+  </body>
+</html>
