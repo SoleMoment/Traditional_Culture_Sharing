@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>礼仪规范 · 中国优秀传统文化分享会</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      :root {
+        --primary: #556B2F;
+        --primary-light: #6B8E23;
+        --primary-dark: #2E4A1C;
+        --primary-gradient: linear-gradient(135deg, #556B2F 0%, #6B8E23 100%);
+      }
+      .brand::before {
+        content: "🏮";
+      }
+      .nav a.active {
+        color: var(--primary);
+        background: rgba(85, 107, 47, 0.1);
+      }
+      .nav a.active::after {
+        background: var(--primary);
+      }
+      .btn {
+        background: var(--primary-gradient);
+      }
+      .btn:hover {
+        box-shadow: 0 4px 12px rgba(85, 107, 47, 0.3);
+      }
+      .civics-item {
+        transition: all 0.2s;
+      }
+      .civics-item:hover {
+        transform: translateX(3px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="topbar">
+        <div class="brand">中国优秀传统文化分享会</div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+
+      <div class="card" style="padding: 1rem 1.5rem;">
+        <div class="card-header" style="padding: 0 0 0.75rem 0; margin-bottom: 0.75rem;">
+          <div>
+            <h1 style="margin-bottom: 0.25rem; font-size: 1.25rem;">📋 网络礼仪规范</h1>
+            <p class="muted" style="margin-bottom: 0; font-size: 0.8rem;">学习传统礼仪，做文明有礼的文化传承者</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+          <div class="civics-item" style="display: flex; gap: 0.75rem; padding: 1rem; background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(210, 105, 30, 0.02) 100%); border-radius: 8px; border-left: 3px solid #8B4513;">
+            <div style="font-size: 1.5rem;">📜</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #5D3A1A; font-size: 0.9rem; font-weight: 600;">真实身份 · 诚信之道</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.8rem; line-height: 1.5;">注册使用真实姓名，不冒充他人。"人而无信，不知其可也。"</p>
+            </div>
+          </div>
+
+          <div class="civics-item" style="display: flex; gap: 0.75rem; padding: 1rem; background: linear-gradient(135deg, rgba(178, 34, 34, 0.05) 0%, rgba(220, 20, 60, 0.02) 100%); border-radius: 8px; border-left: 3px solid #B22222;">
+            <div style="font-size: 1.5rem;">🤝</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #8B0000; font-size: 0.9rem; font-weight: 600;">尊重友善 · 礼之用</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.8rem; line-height: 1.5;">使用礼貌用语，不嘲讽、不攻击。"礼之用，和为贵。"</p>
+            </div>
+          </div>
+
+          <div class="civics-item" style="display: flex; gap: 0.75rem; padding: 1rem; background: linear-gradient(135deg, rgba(85, 107, 47, 0.05) 0%, rgba(107, 142, 35, 0.02) 100%); border-radius: 8px; border-left: 3px solid #556B2F;">
+            <div style="font-size: 1.5rem;">🔒</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #2E4A1C; font-size: 0.9rem; font-weight: 600;">保护隐私 · 慎言慎行</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.8rem; line-height: 1.5;">不公开敏感信息。"慎言者，明哲保身之道。"</p>
+            </div>
+          </div>
+
+          <div class="civics-item" style="display: flex; gap: 0.75rem; padding: 1rem; background: linear-gradient(135deg, rgba(218, 165, 32, 0.05) 0%, rgba(255, 215, 0, 0.02) 100%); border-radius: 8px; border-left: 3px solid #DAA520;">
+            <div style="font-size: 1.5rem;">💭</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #B8860B; font-size: 0.9rem; font-weight: 600;">理性表达 · 君子和而不同</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.8rem; line-height: 1.5;">有不同意见先肯定对方。"君子和而不同。"</p>
+            </div>
+          </div>
+
+          <div class="civics-item" style="display: flex; gap: 0.75rem; padding: 1rem; background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(8, 145, 178, 0.02) 100%); border-radius: 8px; border-left: 3px solid #06b6d4;">
+            <div style="font-size: 1.5rem;">⚖️</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #0e7490; font-size: 0.9rem; font-weight: 600;">遵守法纪 · 不以规矩</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.8rem; line-height: 1.5;">不传播违法低俗内容。"不以规矩，不能成方圆。"</p>
+            </div>
+          </div>
+
+          <div class="civics-item" style="display: flex; gap: 0.75rem; padding: 1rem; background: linear-gradient(135deg, rgba(139, 0, 0, 0.05) 0%, rgba(178, 34, 34, 0.02) 100%); border-radius: 8px; border-left: 3px solid #8B0000;">
+            <div style="font-size: 1.5rem;">🚩</div>
+            <div>
+              <h3 style="margin-bottom: 0.25rem; color: #5C0000; font-size: 0.9rem; font-weight: 600;">善用举报 · 见义而为</h3>
+              <p class="muted" style="margin-bottom: 0; font-size: 0.8rem; line-height: 1.5;">发现不当内容使用举报功能。"见义不为，无勇也。"</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 0.75rem;">
+          <div style="padding: 1rem; background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(210, 105, 30, 0.02) 100%); border-radius: 8px; border: 1px solid rgba(139, 69, 19, 0.1);">
+            <h3 style="margin-bottom: 0.5rem; color: #5D3A1A; font-size: 0.9rem; font-weight: 600;">💡 传统礼仪小贴士</h3>
+            <ul style="margin: 0; padding-left: 1rem; color: #6b7280; font-size: 0.8rem; line-height: 1.6;">
+              <li>开头：使用"某某同学你好"等传统问候语</li>
+              <li>结尾：使用"祝好"等祝福语</li>
+              <li>署名：使用真实姓名，体现诚信</li>
+            </ul>
+          </div>
+
+          <div style="padding: 1rem; background: linear-gradient(135deg, rgba(85, 107, 47, 0.05) 0%, rgba(107, 142, 35, 0.02) 100%); border-radius: 8px; border: 1px solid rgba(85, 107, 47, 0.1);">
+            <h3 style="margin-bottom: 0.5rem; color: #2E4A1C; font-size: 0.9rem; font-weight: 600;">🧭 学生行动建议</h3>
+            <p class="muted" style="margin-bottom: 0; font-size: 0.8rem; line-height: 1.6;">发言前先思考是否礼貌、真实、合适；遇到不当内容不跟风，先截图保留再使用举报功能。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/vendor/socket.io.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script>
+      (async () => {
+        const user = await getMe();
+        requireAuthPage(user);
+        document.getElementById('nav').innerHTML =
+          '<a href="/dashboard.html">大厅</a>' +
+          '<a href="/mail.html">书信</a>' +
+          '<a href="/chat.html">茶话</a>' +
+          '<a href="/space.html">展厅</a>' +
+          '<a href="/civics.html" class="active">礼仪</a>' +
+          '<a href="/evaluate.html">评价</a>' +
+          '<a href="#" id="logout">退出</a>';
+        document.getElementById('logout').onclick = async (e) => {
+          e.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          location.href = '/index.html';
+        };
+
+        initTaskControlRealtime();
+      })();
+    </script>
+  </body>
+</html>

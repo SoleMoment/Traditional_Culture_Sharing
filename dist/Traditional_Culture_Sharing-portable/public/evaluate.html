@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>自我评价 · 中国优秀传统文化分享会</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/loading.css" />
+    <style>
+      html, body {
+        height: 100%;
+        overflow: hidden;
+      }
+      :root {
+        --primary: #2563EB;
+        --primary-light: #3B82F6;
+        --primary-dark: #1D4ED8;
+        --primary-gradient: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+      }
+      .brand::before { content: "🏮"; }
+      .nav a.active {
+        color: var(--primary);
+        background: rgba(37, 99, 235, 0.1);
+      }
+      .nav a.active::after { background: var(--primary); }
+      .btn { background: var(--primary-gradient); }
+      .btn:hover { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+      .eval-card {
+        border-left: 4px solid var(--primary-light);
+        background: linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(37,99,235,0.02) 100%);
+        padding: 0.95rem !important;
+      }
+      .criteria {
+        margin: 0.45rem 0 0;
+        padding-left: 1rem;
+        color: #64748b;
+        font-size: 0.84rem;
+        line-height: 1.45;
+      }
+      .criteria li { margin: 0.14rem 0; }
+      .star-group {
+        display: flex;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+        margin-top: 0.7rem;
+      }
+      .star-pill {
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        border-radius: 999px;
+        padding: 0.32rem 0.72rem;
+        cursor: pointer;
+        font-size: 0.82rem;
+      }
+      .star-pill.active {
+        color: #fff;
+        border-color: var(--primary);
+        background: var(--primary-gradient);
+      }
+      .eval-layout {
+        max-width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0.75rem 1.25rem;
+      }
+      .eval-shell {
+        margin-bottom: 0;
+        padding: 0.85rem 1rem 1rem;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #evalForm {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: auto auto auto;
+        gap: 0.75rem;
+        align-content: start;
+        margin: 0;
+      }
+      .eval-actions,
+      #msg,
+      #err {
+        grid-column: 1 / -1;
+      }
+      .eval-actions {
+        margin-top: 1rem;
+      }
+      #msg {
+        margin-top: 0.2rem !important;
+      }
+      #certificateBox {
+        display: none;
+        margin-top: 0.72rem;
+        margin-bottom: 0.55rem;
+        border: 1px solid rgba(120, 53, 15, 0.24);
+        border-radius: 18px;
+        background: linear-gradient(145deg, rgba(255, 253, 247, 0.99) 0%, rgba(254, 243, 199, 0.88) 100%);
+        padding: 0.8rem 0.86rem;
+      }
+      .certificate-sheet {
+        border: 2px solid rgba(120, 53, 15, 0.34);
+        border-radius: 14px;
+        padding: 0.95rem 1rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.68) 0%, rgba(255, 251, 235, 0.72) 100%);
+        text-align: center;
+        color: #78350f;
+        position: relative;
+        box-shadow: inset 0 0 0 2px rgba(120, 53, 15, 0.12);
+      }
+      .certificate-sheet::before {
+        content: "";
+        position: absolute;
+        inset: 8px;
+        border: 1px solid rgba(146, 64, 14, 0.35);
+        border-radius: 10px;
+        pointer-events: none;
+      }
+      .certificate-topline {
+        font-size: 0.84rem;
+        letter-spacing: 0.26em;
+        color: #7c2d12;
+        margin-bottom: 0.42rem;
+        font-weight: 600;
+      }
+      .certificate-title {
+        font-size: 1.72rem;
+        font-weight: 800;
+        margin-bottom: 0.18rem;
+        letter-spacing: 0.2em;
+        color: #7f1d1d;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      }
+      .certificate-subtitle {
+        font-size: 0.86rem;
+        color: #7c2d12;
+        margin-bottom: 0.38rem;
+        letter-spacing: 0.06em;
+      }
+      .certificate-divider {
+        width: 210px;
+        max-width: 85%;
+        height: 1px;
+        margin: 0 auto 0.54rem;
+        background: linear-gradient(90deg, rgba(180, 83, 9, 0) 0%, rgba(180, 83, 9, 0.55) 22%, rgba(180, 83, 9, 0.55) 78%, rgba(180, 83, 9, 0) 100%);
+      }
+      .certificate-award-line {
+        font-size: 0.97rem;
+        line-height: 1.56;
+        margin-bottom: 0.15rem;
+      }
+      .certificate-name {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #7f1d1d;
+        padding: 0 0.28rem;
+        border-bottom: 1px solid rgba(127, 29, 29, 0.28);
+      }
+      .certificate-stars-line {
+        font-size: 0.9rem;
+        line-height: 1.54;
+        margin-bottom: 0.08rem;
+      }
+      .certificate-stars {
+        font-size: 1.12rem;
+        font-weight: 800;
+        color: #9a3412;
+        padding: 0 0.2rem;
+      }
+      .certificate-text {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        margin-top: 0.28rem;
+        color: #78350f;
+      }
+      .certificate-footer {
+        margin-top: 0.45rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 1rem;
+      }
+      .certificate-date {
+        font-size: 0.77rem;
+        color: #7c2d12;
+        letter-spacing: 0.02em;
+      }
+      .certificate-no {
+        margin-top: 0.1rem;
+        font-size: 0.73rem;
+        color: #92400e;
+      }
+      .certificate-seal {
+        width: 70px;
+        height: 70px;
+        border: 3px solid rgba(153, 27, 27, 0.8);
+        border-radius: 50%;
+        color: rgba(153, 27, 27, 0.9);
+        font-size: 0.66rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.32;
+        transform: rotate(-6deg);
+        background: rgba(254, 226, 226, 0.18);
+        box-shadow: inset 0 0 0 2px rgba(153, 27, 27, 0.32);
+      }
+      .certificate-corner {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(120, 53, 15, 0.45);
+        pointer-events: none;
+      }
+      .certificate-corner.tl { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }
+      .certificate-corner.tr { top: 10px; right: 10px; border-left: 0; border-bottom: 0; }
+      .certificate-corner.bl { bottom: 10px; left: 10px; border-right: 0; border-top: 0; }
+      .certificate-corner.br { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
+      @media (max-width: 900px) {
+        #certificateBox {
+          padding: 0.82rem;
+        }
+        .certificate-sheet {
+          padding: 0.96rem 0.86rem;
+        }
+        .certificate-title {
+          font-size: 1.42rem;
+        }
+        .certificate-divider {
+          width: 146px;
+        }
+        .certificate-award-line,
+        .certificate-stars-line {
+          font-size: 0.84rem;
+        }
+        .certificate-name,
+        .certificate-stars {
+          font-size: 1rem;
+        }
+        .certificate-footer {
+          margin-top: 0.52rem;
+        }
+        .certificate-seal {
+          width: 62px;
+          height: 62px;
+          font-size: 0.6rem;
+        }
+      }
+      @media (max-height: 860px) {
+        #certificateBox {
+          margin-top: 0.55rem;
+          margin-bottom: 0.45rem;
+          padding: 0.66rem;
+        }
+        .certificate-sheet {
+          padding: 0.74rem 0.7rem;
+        }
+        .certificate-title {
+          font-size: 1.3rem;
+          margin-bottom: 0.12rem;
+        }
+        .certificate-subtitle {
+          margin-bottom: 0.28rem;
+        }
+        .certificate-divider {
+          margin-bottom: 0.36rem;
+        }
+        .certificate-award-line,
+        .certificate-stars-line {
+          font-size: 0.8rem;
+          line-height: 1.44;
+        }
+        .certificate-name,
+        .certificate-stars {
+          font-size: 0.94rem;
+        }
+        .certificate-text {
+          font-size: 0.72rem;
+          line-height: 1.3;
+          margin-top: 0.2rem;
+        }
+        .certificate-footer {
+          margin-top: 0.34rem;
+        }
+        .certificate-date,
+        .certificate-no {
+          font-size: 0.68rem;
+        }
+        .certificate-seal {
+          width: 56px;
+          height: 56px;
+          font-size: 0.55rem;
+        }
+      }
+      body.submitted-mode #evalForm {
+        gap: 0.48rem;
+      }
+      body.submitted-mode .eval-card {
+        padding: 0.58rem !important;
+      }
+      body.submitted-mode .eval-card h3 {
+        margin-bottom: 0.2rem !important;
+        font-size: 0.96rem;
+      }
+      body.submitted-mode .criteria {
+        display: none;
+      }
+      body.submitted-mode .star-group {
+        margin-top: 0.32rem;
+        gap: 0.34rem;
+      }
+      body.submitted-mode .star-pill {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.74rem;
+      }
+      body.submitted-mode .eval-actions {
+        display: none !important;
+      }
+      body.submitted-mode #msg {
+        display: none;
+      }
+      body.submitted-mode #certificateBox {
+        margin-top: 0.45rem;
+        padding: 1rem 1.06rem;
+      }
+      body.submitted-mode .certificate-sheet {
+        padding: 1.15rem 1.22rem;
+      }
+      body.submitted-mode .certificate-title {
+        font-size: 1.92rem;
+        margin-bottom: 0.24rem;
+      }
+      body.submitted-mode .certificate-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 0.46rem;
+      }
+      body.submitted-mode .certificate-divider {
+        width: 232px;
+        margin-bottom: 0.66rem;
+      }
+      body.submitted-mode .certificate-award-line {
+        font-size: 1.02rem;
+      }
+      body.submitted-mode .certificate-stars-line {
+        font-size: 0.95rem;
+      }
+      body.submitted-mode .certificate-name {
+        font-size: 1.28rem;
+      }
+      body.submitted-mode .certificate-stars {
+        font-size: 1.18rem;
+      }
+      body.submitted-mode .certificate-text {
+        font-size: 0.84rem;
+        line-height: 1.46;
+      }
+      body.submitted-mode .certificate-footer {
+        margin-top: 0.58rem;
+      }
+      body.submitted-mode .certificate-seal {
+        width: 76px;
+        height: 76px;
+        font-size: 0.7rem;
+      }
+      @media (max-height: 860px) {
+        body.submitted-mode #certificateBox {
+          padding: 0.74rem 0.8rem;
+        }
+        body.submitted-mode .certificate-sheet {
+          padding: 0.84rem 0.8rem;
+        }
+        body.submitted-mode .certificate-title {
+          font-size: 1.45rem;
+        }
+        body.submitted-mode .certificate-seal {
+          width: 60px;
+          height: 60px;
+          font-size: 0.58rem;
+        }
+      }
+      @media (max-width: 1200px) {
+        .eval-layout {
+          padding: 0.65rem;
+        }
+        #evalForm {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+        body.submitted-mode #evalForm {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 860px) {
+        body.submitted-mode #evalForm {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout eval-layout">
+      <div class="topbar">
+        <div class="brand">中国优秀传统文化分享会</div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+
+      <div class="card eval-shell">
+        <div class="card-header">
+          <div>
+            <h1 style="margin-bottom:0.3rem;">⭐ 学生自我评价</h1>
+            <p class="muted" style="margin-bottom:0;">按照三节课学习表现给自己打星，最高 3 颗星。</p>
+          </div>
+          <div>
+            <button class="btn btn-secondary" id="reloadBtn" type="button">刷新</button>
+          </div>
+        </div>
+
+        <form id="evalForm">
+          <div class="card eval-card" style="margin:0;">
+            <h3 style="margin-bottom:0.3rem; display:flex; align-items:center; gap:0.5rem;">第1课：体验邮件交流 <span id="lesson1LockBadge" class="badge badge-red" style="display:none;">已锁定</span></h3>
+            <ul class="criteria">
+              <li>1星：完成发送或接收 1 封邮件。</li>
+              <li>2星：邮件主题与正文完整，表达基本清楚。</li>
+              <li>3星：内容规范、礼貌得体，并能附上相关学习资料。</li>
+            </ul>
+            <div class="star-group" data-field="lesson1Star"></div>
+          </div>
+
+          <div class="card eval-card" style="margin:0;">
+            <h3 style="margin-bottom:0.3rem; display:flex; align-items:center; gap:0.5rem;">第2课：在线聊天互动 <span id="lesson2LockBadge" class="badge badge-red" style="display:none;">已锁定</span></h3>
+            <ul class="criteria">
+              <li>1星：在聊天室参与发言。</li>
+              <li>2星：能围绕主题进行连续交流。</li>
+              <li>3星：交流文明、有条理，并积极回应他人观点。</li>
+            </ul>
+            <div class="star-group" data-field="lesson2Star"></div>
+          </div>
+
+          <div class="card eval-card" style="margin:0;">
+            <h3 style="margin-bottom:0.3rem; display:flex; align-items:center; gap:0.5rem;">第3课：发布文化作品 <span id="lesson3LockBadge" class="badge badge-red" style="display:none;">已锁定</span></h3>
+            <ul class="criteria">
+              <li>1星：发布 1 条作品内容。</li>
+              <li>2星：作品标题、介绍清晰，结构完整。</li>
+              <li>3星：作品质量好，能进行文明评论互动与反思。</li>
+            </ul>
+            <div class="star-group" data-field="lesson3Star"></div>
+          </div>
+
+          <div class="eval-actions" style="display:flex; justify-content:flex-end; gap:0.5rem;">
+            <button class="btn btn-secondary" id="resetBtn" type="button">重置为0星</button>
+            <button class="btn" id="saveBtn" type="submit">保存评价</button>
+          </div>
+          <p id="msg" class="muted" style="margin:0;"></p>
+          <p id="err" class="err"></p>
+        </form>
+
+        <div id="certificateBox">
+          <div class="certificate-sheet">
+            <span class="certificate-corner tl" aria-hidden="true"></span>
+            <span class="certificate-corner tr" aria-hidden="true"></span>
+            <span class="certificate-corner bl" aria-hidden="true"></span>
+            <span class="certificate-corner br" aria-hidden="true"></span>
+            <div class="certificate-topline">中国优秀传统文化分享会</div>
+            <div class="certificate-title">学习奖状</div>
+            <div class="certificate-subtitle">传统文化学习之星荣誉证书</div>
+            <div class="certificate-divider" aria-hidden="true"></div>
+            <div class="certificate-award-line">
+              兹授予 <span class="certificate-name" id="certificateName">同学</span> 同学
+            </div>
+            <div class="certificate-stars-line">
+              本次综合学习评价为 <span class="certificate-stars" id="certificateStars">0</span> 星
+            </div>
+            <div class="certificate-text" id="certificateText">在传统文化学习活动中表现积极，特发此状，以资鼓励。</div>
+            <div class="certificate-footer">
+              <div>
+                <div class="certificate-date" id="certificateDate">颁发日期：2026年3月26日</div>
+                <div class="certificate-no" id="certificateNo">证书编号：CH-20260326-000</div>
+              </div>
+              <div class="certificate-seal">组委会印</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/vendor/socket.io.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script>
+      const state = {
+        lesson1Star: 0,
+        lesson2Star: 0,
+        lesson3Star: 0,
+      };
+
+      const lessonLocks = {
+        1: false,
+        2: false,
+        3: false,
+      };
+      let evaluationSubmitted = false;
+      let currentUserName = '同学';
+
+      function renderCertificate() {
+        const total = Number(state.lesson1Star || 0) + Number(state.lesson2Star || 0) + Number(state.lesson3Star || 0);
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        const serial = `${y}${m}${d}${String(total).padStart(2, '0')}`;
+        document.getElementById('certificateName').textContent = currentUserName || '同学';
+        document.getElementById('certificateStars').textContent = String(total);
+        document.getElementById('certificateText').textContent = '在传统文化学习活动中表现积极，学习态度端正，特发此状，以资鼓励。';
+        document.getElementById('certificateDate').textContent = `颁发日期：${y}年${m}月${d}日`;
+        document.getElementById('certificateNo').textContent = `证书编号：CH-${serial}`;
+      }
+
+      function updateEvalActionState() {
+        const allLockedByTeacher = lessonLocks[1] && lessonLocks[2] && lessonLocks[3];
+        const blocked = allLockedByTeacher || evaluationSubmitted;
+        setElementLocked(document.getElementById('saveBtn'), blocked, '评价已锁定');
+        setElementLocked(document.getElementById('resetBtn'), blocked, '评价已锁定');
+        document.getElementById('certificateBox').style.display = evaluationSubmitted ? 'block' : 'none';
+        document.body.classList.toggle('submitted-mode', evaluationSubmitted);
+      }
+
+      function fieldToLesson(field) {
+        if (field === 'lesson1Star') return 1;
+        if (field === 'lesson2Star') return 2;
+        return 3;
+      }
+
+      function renderStarGroup(field) {
+        const container = document.querySelector(`.star-group[data-field="${field}"]`);
+        const current = Number(state[field] || 0);
+        const lesson = fieldToLesson(field);
+        const locked = !!lessonLocks[lesson];
+        container.innerHTML = [0, 1, 2, 3]
+          .map((n) => {
+            const label = n === 0 ? '0星（未完成）' : `${'⭐'.repeat(n)} ${n}星`;
+            return `<button type="button" class="star-pill ${current === n ? 'active' : ''} ${locked ? 'task-locked' : ''}" data-field="${field}" data-value="${n}" ${locked ? 'disabled title="该课评价已锁定"' : ''}>${label}</button>`;
+          })
+          .join('');
+      }
+
+      function renderAll() {
+        renderStarGroup('lesson1Star');
+        renderStarGroup('lesson2Star');
+        renderStarGroup('lesson3Star');
+      }
+
+      async function loadEvaluation() {
+        document.getElementById('err').textContent = '';
+        try {
+          const data = await api('/api/evaluation');
+          const ev = data.evaluation || {};
+          state.lesson1Star = Number(ev.lesson1Star || 0);
+          state.lesson2Star = Number(ev.lesson2Star || 0);
+          state.lesson3Star = Number(ev.lesson3Star || 0);
+          evaluationSubmitted = !!data.submitted;
+          renderCertificate();
+          renderAll();
+          updateEvalActionState();
+        } catch (e) {
+          document.getElementById('err').textContent = e.message;
+        }
+      }
+
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('.star-pill');
+        if (!target) return;
+        const field = target.getAttribute('data-field');
+        if (evaluationSubmitted) {
+          document.getElementById('err').textContent = '评价已提交，不能再次修改';
+          return;
+        }
+        if (lessonLocks[fieldToLesson(field)]) {
+          document.getElementById('err').textContent = `第${fieldToLesson(field)}课评价已被教师锁定，暂不可修改`;
+          return;
+        }
+        const value = Number(target.getAttribute('data-value'));
+        state[field] = value;
+        renderAll();
+      });
+
+      document.getElementById('evalForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById('saveBtn');
+        if (evaluationSubmitted) {
+          document.getElementById('err').textContent = '评价已提交，不能再次修改';
+          return;
+        }
+        if (lessonLocks[1] && lessonLocks[2] && lessonLocks[3]) {
+          document.getElementById('err').textContent = '三节课评价均已被教师锁定，暂不可保存';
+          return;
+        }
+        document.getElementById('err').textContent = '';
+        setButtonLoading(saveBtn, true);
+        try {
+          const res = await api('/api/evaluation', {
+            method: 'POST',
+            body: JSON.stringify(state),
+          });
+          evaluationSubmitted = true;
+          document.getElementById('msg').textContent = `保存成功：${formatTime(res.updatedAt)}`;
+          renderCertificate();
+          updateEvalActionState();
+          showToast('自我评价已保存', 'success');
+        } catch (e2) {
+          document.getElementById('err').textContent = e2.message;
+          showToast('保存失败：' + e2.message, 'error');
+        } finally {
+          setButtonLoading(saveBtn, false);
+        }
+      });
+
+      document.getElementById('resetBtn').onclick = () => {
+        if (evaluationSubmitted) {
+          document.getElementById('err').textContent = '评价已提交，不能再次修改';
+          return;
+        }
+        if (lessonLocks[1] && lessonLocks[2] && lessonLocks[3]) {
+          document.getElementById('err').textContent = '三节课评价均已被教师锁定，暂不可重置';
+          return;
+        }
+        state.lesson1Star = 0;
+        state.lesson2Star = 0;
+        state.lesson3Star = 0;
+        renderAll();
+      };
+
+      function applyEvaluationLocks(controls) {
+        lessonLocks[1] = !!controls.evalLesson1Locked;
+        lessonLocks[2] = !!controls.evalLesson2Locked;
+        lessonLocks[3] = !!controls.evalLesson3Locked;
+
+        document.getElementById('lesson1LockBadge').style.display = lessonLocks[1] ? 'inline-flex' : 'none';
+        document.getElementById('lesson2LockBadge').style.display = lessonLocks[2] ? 'inline-flex' : 'none';
+        document.getElementById('lesson3LockBadge').style.display = lessonLocks[3] ? 'inline-flex' : 'none';
+
+        const allLocked = lessonLocks[1] && lessonLocks[2] && lessonLocks[3];
+        renderAll();
+        updateEvalActionState();
+      }
+
+      document.getElementById('reloadBtn').onclick = loadEvaluation;
+
+      (async () => {
+        const user = await getMe();
+        requireAuthPage(user);
+        currentUserName = user.displayName || user.username || '同学';
+        document.getElementById('nav').innerHTML =
+          '<a href="/dashboard.html">大厅</a>' +
+          '<a href="/mail.html">书信</a>' +
+          '<a href="/chat.html">茶话</a>' +
+          '<a href="/space.html">展厅</a>' +
+          '<a href="/civics.html">礼仪</a>' +
+          '<a href="/evaluate.html" class="active">评价</a>' +
+          '<a href="#" id="logout">退出</a>';
+        document.getElementById('logout').onclick = async (evt) => {
+          evt.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          location.href = '/index.html';
+        };
+
+        initTaskControlRealtime();
+        onTaskControlChange((controls) => {
+          applyEvaluationLocks(controls);
+        });
+
+        await loadEvaluation();
+      })();
+    </script>
+  </body>
+</html>

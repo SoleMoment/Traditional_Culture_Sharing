@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>教师管理 · 机房素养网</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .admin-tabs {
+        display: inline-flex;
+        gap: 0.5rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 999px;
+        padding: 0.35rem;
+        margin-bottom: 1rem;
+      }
+      .admin-tab {
+        border: none;
+        border-radius: 999px;
+        background: transparent;
+        color: #64748b;
+        font-weight: 600;
+        padding: 0.45rem 0.95rem;
+        cursor: pointer;
+      }
+      .admin-tab.active {
+        background: #ffffff;
+        color: #2563eb;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+      .admin-panel {
+        display: none;
+      }
+      .admin-panel.active {
+        display: block;
+      }
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
+      }
+      .control-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1rem;
+        background: #fff;
+      }
+      .control-card h3 {
+        margin-bottom: 0.5rem;
+      }
+      .control-status {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+      }
+      .control-actions,
+      .global-actions,
+      .report-toolbar {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .report-toolbar {
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
+      .report-table-wrap {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .report-empty {
+        display: none;
+        text-align: center;
+        padding: 2.5rem 1rem;
+      }
+      .report-empty.show {
+        display: block;
+      }
+      .target-link {
+        border: 1px solid rgba(37, 99, 235, 0.25);
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(37, 99, 235, 0.06) 100%);
+        color: #1d4ed8;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 0.2rem 0.7rem;
+        font-size: 0.82rem;
+        line-height: 1.2;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      .target-link:hover {
+        border-color: rgba(37, 99, 235, 0.4);
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.18) 0%, rgba(37, 99, 235, 0.1) 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.15);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="topbar">
+        <div class="brand">👨‍🏫 教师管理</div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="margin-bottom: 1rem;">
+          <div>
+            <h2 style="margin-bottom: 0.25rem;">课堂管理中心</h2>
+            <p class="muted" style="margin-bottom: 0;">任务控制与举报处理统一在此页面完成。</p>
+          </div>
+        </div>
+
+        <div class="admin-tabs" role="tablist" aria-label="教师管理分页">
+          <button id="tabControl" class="admin-tab active" data-tab="control" type="button">任务控制</button>
+          <button id="tabReports" class="admin-tab" data-tab="reports" type="button">举报记录</button>
+        </div>
+
+        <section id="panelControl" class="admin-panel active">
+          <div class="global-actions" style="margin-bottom: 1rem;">
+            <button class="btn btn-secondary" id="unlockAll" type="button">全部解锁</button>
+            <button class="btn danger" id="lockAll" type="button">全部锁定</button>
+          </div>
+
+          <div class="control-grid">
+            <section class="control-card" data-lesson="1">
+              <h3>第1课：邮件交流</h3>
+              <p class="muted" style="margin-bottom: 0.75rem;">同步控制：大厅邮件卡片、导航书信标签、第1课评价。</p>
+              <div class="control-status" id="status1"></div>
+              <div class="control-actions">
+                <button class="btn" data-act="unlock" data-lesson="1" type="button">解锁</button>
+                <button class="btn btn-secondary" data-act="lock" data-lesson="1" type="button">锁定</button>
+              </div>
+            </section>
+
+            <section class="control-card" data-lesson="2">
+              <h3>第2课：在线茶话</h3>
+              <p class="muted" style="margin-bottom: 0.75rem;">同步控制：大厅茶话卡片、导航茶话标签、第2课评价。</p>
+              <div class="control-status" id="status2"></div>
+              <div class="control-actions">
+                <button class="btn" data-act="unlock" data-lesson="2" type="button">解锁</button>
+                <button class="btn btn-secondary" data-act="lock" data-lesson="2" type="button">锁定</button>
+              </div>
+            </section>
+
+            <section class="control-card" data-lesson="3">
+              <h3>第3课：文化展厅</h3>
+              <p class="muted" style="margin-bottom: 0.75rem;">大厅永久开放；本控制同步作用于展厅卡片、导航展厅标签、第3课评价。</p>
+              <div class="control-status" id="status3"></div>
+              <div class="control-actions">
+                <button class="btn" data-act="unlock" data-lesson="3" type="button">解锁</button>
+                <button class="btn btn-secondary" data-act="lock" data-lesson="3" type="button">锁定</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="panelReports" class="admin-panel">
+          <div class="report-toolbar">
+            <div>
+              <h3 style="margin: 0 0 0.25rem 0;">举报记录</h3>
+              <p class="muted" style="margin: 0;">可删除被举报作品或评论，聊天类举报仅展示记录。</p>
+            </div>
+            <button class="btn btn-secondary" id="refreshReports" type="button">刷新</button>
+          </div>
+
+          <div id="reportEmpty" class="report-empty">
+            <div class="empty-state-icon">✅</div>
+            <div class="empty-state-title">暂无举报</div>
+            <p class="muted" style="margin: 0;">当前没有待处理举报记录</p>
+          </div>
+
+          <div id="reportTableWrap" class="report-table-wrap" style="display:none;">
+            <table style="margin: 0; border-radius: 0; border: none;">
+              <thead>
+                <tr>
+                  <th>时间</th>
+                  <th>举报人</th>
+                  <th>类型</th>
+                  <th>内容标题</th>
+                  <th>发布人</th>
+                  <th>原因</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="reportTbody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="previewModal" class="modal" style="display:none; position: fixed; inset:0; z-index:1200;">
+      <div class="modal-backdrop"></div>
+      <div class="modal-panel" style="max-width: 720px; width: 92%;">
+        <div class="modal-header">
+          <h3 id="previewTitle">作品预览</h3>
+          <button class="btn btn-secondary btn-sm" id="closePreview" type="button">关闭</button>
+        </div>
+        <div style="padding: 1rem 1.25rem 1.25rem;">
+          <p class="muted" id="previewMeta" style="margin-bottom: 0.75rem;"></p>
+          <div id="previewBody" style="white-space: pre-wrap; line-height: 1.7; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:0.85rem;"></div>
+          <div id="previewAttach" style="margin-top: 0.85rem;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/vendor/socket.io.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script>
+      let reportsLoaded = false;
+      const reportPreviewMap = {};
+
+      function escapeHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = s == null ? '' : String(s);
+        return d.innerHTML;
+      }
+
+      function setAdminTab(tab) {
+        const isControl = tab === 'control';
+        document.getElementById('tabControl').classList.toggle('active', isControl);
+        document.getElementById('tabReports').classList.toggle('active', !isControl);
+        document.getElementById('panelControl').classList.toggle('active', isControl);
+        document.getElementById('panelReports').classList.toggle('active', !isControl);
+
+        if (!isControl && !reportsLoaded) {
+          loadReports();
+        }
+      }
+
+      function lessonControlPatch(lesson, locked) {
+        const l = Number(lesson);
+        if (l === 1) return { mailLocked: locked, evalLesson1Locked: locked };
+        if (l === 2) return { chatLocked: locked, evalLesson2Locked: locked };
+        return { spaceLocked: locked, evalLesson3Locked: locked };
+      }
+
+      function renderLessonStatus(index, controls) {
+        const taskLocked = index === 1 ? controls.mailLocked : index === 2 ? controls.chatLocked : controls.spaceLocked;
+        const evalLocked = index === 1 ? controls.evalLesson1Locked : index === 2 ? controls.evalLesson2Locked : controls.evalLesson3Locked;
+        const el = document.getElementById('status' + index);
+        el.innerHTML =
+          '<span class="badge ' + (taskLocked ? 'badge-red' : 'badge-green') + '">任务' + (taskLocked ? '已锁定' : '已解锁') + '</span>' +
+          '<span class="badge ' + (evalLocked ? 'badge-red' : 'badge-blue') + '">评价' + (evalLocked ? '已锁定' : '已解锁') + '</span>';
+      }
+
+      function renderControl(controls) {
+        renderLessonStatus(1, controls);
+        renderLessonStatus(2, controls);
+        renderLessonStatus(3, controls);
+      }
+
+      async function updateControls(payload) {
+        try {
+          const res = await api('/api/admin/task-control', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+          });
+          renderControl(res.controls || getTaskControlState());
+        } catch (e) {
+          showToast('更新失败：' + e.message, 'error');
+        }
+      }
+
+      async function delComment(id) {
+        if (!window.confirm('确定删除该评论？此操作不可恢复。')) return;
+        try {
+          await api('/api/admin/comments/' + id, { method: 'DELETE' });
+          await loadReports();
+        } catch (e) {
+          showToast('删除失败：' + e.message, 'error');
+        }
+      }
+
+      async function delPost(id) {
+        if (!window.confirm('确定删除该作品及附件？此操作不可恢复。')) return;
+        try {
+          await api('/api/admin/posts/' + id, { method: 'DELETE' });
+          await loadReports();
+        } catch (e) {
+          showToast('删除失败：' + e.message, 'error');
+        }
+      }
+
+      async function loadReports() {
+        try {
+          const data = await api('/api/admin/reports');
+          const rows = data.reports || [];
+          reportsLoaded = true;
+          Object.keys(reportPreviewMap).forEach((k) => delete reportPreviewMap[k]);
+
+          const emptyEl = document.getElementById('reportEmpty');
+          const tableWrap = document.getElementById('reportTableWrap');
+          const tbody = document.getElementById('reportTbody');
+
+          if (!rows.length) {
+            emptyEl.classList.add('show');
+            tableWrap.style.display = 'none';
+            tbody.innerHTML = '';
+            return;
+          }
+
+          emptyEl.classList.remove('show');
+          tableWrap.style.display = 'block';
+
+          tbody.innerHTML = rows
+            .map((r) => {
+              const previewKey = `r-${r.id}-${r.target_type}-${r.target_id}`;
+              if (r.previewPost) reportPreviewMap[previewKey] = r.previewPost;
+
+              const typeBadge =
+                r.target_type === 'post'
+                  ? '<span class="badge badge-blue">作品</span>'
+                  : r.target_type === 'comment'
+                    ? '<span class="badge badge-amber">评论</span>'
+                    : '<span class="badge badge-red">聊天</span>';
+
+              const action =
+                r.target_type === 'post'
+                  ? '<button class="btn btn-sm danger" data-act="post" data-id="' + r.target_id + '" type="button">删作品</button>'
+                  : r.target_type === 'comment'
+                    ? '<button class="btn btn-sm danger" data-act="comment" data-id="' + r.target_id + '" type="button">删评论</button>'
+                    : '<span class="muted">仅记录</span>';
+
+              return (
+                '<tr>' +
+                '<td class="muted">' + formatTime(r.created_at) + '</td>' +
+                '<td>' + escapeHtml(r.reporterName || '-') + '</td>' +
+                '<td>' + typeBadge + '</td>' +
+                '<td>' +
+                (r.previewPost
+                  ? '<button class="target-link" type="button" data-preview-key="' + previewKey + '">' + escapeHtml(r.targetTitle || '未命名内容') + '</button>'
+                  : '<span>' + escapeHtml(r.targetTitle || `目标 #${Number(r.target_id || 0)}`) + '</span>') +
+                '</td>' +
+                '<td>' + escapeHtml(r.targetAuthorName || '-') + '</td>' +
+                '<td>' + (r.reason ? escapeHtml(r.reason) : '<span class="muted">未填写</span>') + '</td>' +
+                '<td>' + action + '</td>' +
+                '</tr>'
+              );
+            })
+            .join('');
+
+          tbody.querySelectorAll('button[data-preview-key]').forEach((btn) => {
+            btn.onclick = () => {
+              const post = reportPreviewMap[btn.getAttribute('data-preview-key')];
+              if (post) openPreview(post);
+            };
+          });
+
+          tbody.querySelectorAll('button[data-act]').forEach((btn) => {
+            btn.onclick = async () => {
+              const id = Number(btn.getAttribute('data-id'));
+              const act = btn.getAttribute('data-act');
+              if (act === 'post') await delPost(id);
+              if (act === 'comment') await delComment(id);
+            };
+          });
+        } catch (e) {
+          showToast('加载举报失败：' + e.message, 'error');
+        }
+      }
+
+      function openPreview(post) {
+        document.getElementById('previewTitle').textContent = post.title || '作品预览';
+        const authorLabel = post.authorName ? `发布人：${post.authorName}` : '发布人：未知';
+        const note = post.note ? ` · ${post.note}` : '';
+        document.getElementById('previewMeta').textContent = `${authorLabel} · ${formatTime(post.createdAt)}${note}`;
+        document.getElementById('previewBody').textContent = post.body || '（无正文）';
+
+        const attach = document.getElementById('previewAttach');
+        if (post.fileUrl) {
+          const fileName = post.fileName || '附件';
+          const imageLike = /\.(png|jpg|jpeg|gif|webp)$/i.test(fileName);
+          attach.innerHTML =
+            '<div style="font-size:0.875rem; margin-bottom:0.45rem;"><strong>附件：</strong>' + escapeHtml(fileName) + '</div>' +
+            (imageLike
+              ? '<img src="' + escapeHtml(post.fileUrl) + '" alt="' + escapeHtml(fileName) + '" style="max-width:100%; border-radius:8px; border:1px solid #e2e8f0;" />'
+              : '<a class="btn btn-secondary btn-sm" href="' + escapeHtml(post.fileUrl) + '" target="_blank" rel="noreferrer">查看附件</a>');
+        } else {
+          attach.innerHTML = '<p class="muted" style="margin:0;">无附件</p>';
+        }
+
+        document.getElementById('previewModal').style.display = 'flex';
+      }
+
+      function closePreview() {
+        document.getElementById('previewModal').style.display = 'none';
+      }
+
+      (async () => {
+        const user = await getMe();
+        requireAuthPage(user);
+
+        if (!user || user.role !== 'teacher') {
+          alert('需要教师权限才能访问此页面');
+          window.location.href = '/dashboard.html';
+          return;
+        }
+
+        document.getElementById('nav').innerHTML =
+          '<a href="/dashboard.html">大厅</a>' +
+          '<a href="/admin.html" class="active">教师管理</a>' +
+          '<a href="#" id="logout">退出</a>';
+
+        document.getElementById('logout').onclick = async (e) => {
+          e.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          location.href = '/index.html';
+        };
+
+        initTaskControlRealtime({ autoApply: false });
+        onTaskControlChange((controls) => {
+          renderControl(controls);
+        });
+
+        document.querySelectorAll('button[data-act][data-lesson]').forEach((btn) => {
+          btn.onclick = async () => {
+            const lesson = Number(btn.getAttribute('data-lesson'));
+            const act = btn.getAttribute('data-act');
+            await updateControls(lessonControlPatch(lesson, act === 'lock'));
+          };
+        });
+
+        document.getElementById('lockAll').onclick = () => updateControls({ action: 'allLock' });
+        document.getElementById('unlockAll').onclick = () => updateControls({ action: 'allUnlock' });
+        document.getElementById('refreshReports').onclick = loadReports;
+        document.getElementById('closePreview').onclick = closePreview;
+
+        document.querySelectorAll('.admin-tab').forEach((tabBtn) => {
+          tabBtn.onclick = () => {
+            setAdminTab(tabBtn.getAttribute('data-tab'));
+          };
+        });
+
+        const initData = await api('/api/task-control');
+        renderControl(initData.controls || getTaskControlState());
+      })();
+    </script>
+  </body>
+</html>

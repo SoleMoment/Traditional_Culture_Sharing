@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>中国优秀传统文化分享会 · 注册</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/loading.css" />
+    <style>
+      .auth-hero {
+        background: linear-gradient(145deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+      }
+      .auth-hero::before {
+        background: radial-gradient(circle at 30% 20%, rgba(255,215,0,0.2) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 80%, rgba(139,69,19,0.3) 0%, transparent 50%);
+      }
+      .tradition-pattern {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L35 25 L55 30 L35 35 L30 55 L25 35 L5 30 L25 25 Z' fill='rgba(255,215,0,0.1)'/%3E%3C/svg%3E") repeat;
+        opacity: 0.5;
+      }
+      .email-preview {
+        background: linear-gradient(135deg, rgba(139, 69, 19, 0.08) 0%, rgba(210, 105, 30, 0.05) 100%);
+        border: 1px solid rgba(139, 69, 19, 0.15);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        color: #5D3A1A;
+      }
+      .email-preview strong {
+        color: #8B4513;
+      }
+      #registerSubmit,
+      #registerSubmit:hover,
+      #registerSubmit:active {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+      }
+      #registerSubmit::before {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="auth-shell">
+      <div class="auth-layout">
+        <div class="auth-top">
+          <div class="brand" style="background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); -webkit-background-clip: text;">🏮 中国优秀传统文化分享会</div>
+          <span class="muted">注册账号 · 加入文化传承</span>
+        </div>
+
+        <section class="auth-grid">
+          <article class="auth-hero">
+            <div style="position: relative; z-index: 1;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">📜</div>
+              <h1>加入文化分享会<br>成为传承小使者</h1>
+              <p>注册后即可参与中国优秀传统文化分享会，与同学们一起探索中华文化的博大精深。</p>
+              <ul>
+                <li>🎯 使用真实姓名注册，获得专属文化邮箱</li>
+                <li>📧 使用传统书信礼仪与同学交流</li>
+                <li>🎨 展示你的传统文化作品与发现</li>
+                <li>💬 参与文化话题讨论与分享</li>
+              </ul>
+              <p class="auth-note">已有账号？<a href="/index.html" style="color: #FFD700;">返回登录</a></p>
+            </div>
+            <div class="tradition-pattern"></div>
+          </article>
+
+          <section class="auth-panel">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+              <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2.5rem; box-shadow: 0 4px 15px rgba(139,69,19,0.3);">📜</div>
+              <h2>注册分享会账号</h2>
+              <p class="muted">使用真实中文姓名注册</p>
+            </div>
+            <form id="regForm">
+              <div class="form-group">
+                <label>姓名（请使用真实中文姓名）</label>
+                <input name="name" id="nameInput" autocomplete="name" placeholder="例如：张三" required />
+                <p class="muted" style="font-size: 0.8125rem; margin-top: 0.25rem;">请输入2-10个汉字的真实姓名</p>
+              </div>
+              <div class="form-group">
+                <label>密码</label>
+                <input name="password" type="password" autocomplete="new-password" placeholder="至少 4 位密码" required />
+              </div>
+              <div class="form-group">
+                <label>您的文化邮箱（自动生成）</label>
+                <div class="email-preview" id="emailPreview">
+                  输入姓名后将自动生成邮箱地址
+                </div>
+              </div>
+              <button id="registerSubmit" class="btn btn-lg" type="submit" style="width: 100%; margin-top: 0.5rem; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);">
+                <span>注册并加入</span>
+                <span style="margin-left: 0.5rem;">→</span>
+              </button>
+              <p id="regErr" class="err"></p>
+            </form>
+            <p class="auth-foot">
+              已有账号？<a href="/index.html" style="color: #D2691E;">返回登录</a>
+            </p>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/ui.js"></script>
+    <script src="https://unpkg.com/pinyin-pro@3.18.2/dist/index.js"></script>
+    <script>
+      // 使用 pinyin-pro 库进行拼音转换
+      function toPinyin(str) {
+        try {
+          // pinyin-pro 库的用法
+          if (window.pinyinPro && window.pinyinPro.pinyin) {
+            return window.pinyinPro.pinyin(str, { toneType: 'none', type: 'array' }).join('');
+          }
+          // 降级处理：如果库未加载，返回原字符串
+          console.warn('pinyin-pro 库未加载');
+          return str;
+        } catch (e) {
+          console.error('拼音转换失败:', e);
+          return str;
+        }
+      }
+
+      // 实时预览邮箱
+      document.getElementById('nameInput').addEventListener('input', (e) => {
+        const name = e.target.value.trim();
+        const preview = document.getElementById('emailPreview');
+        if (name && /^[\u4e00-\u9fa5]+$/.test(name)) {
+          const py = toPinyin(name);
+          preview.innerHTML = `<strong>${py}@jifang.lab</strong>（登录时可用"${name}"或"${py}"）`;
+        } else {
+          preview.textContent = '输入姓名后将自动生成邮箱地址';
+        }
+      });
+
+      document.getElementById('regForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+
+        document.getElementById('regErr').textContent = '';
+        submitBtn.disabled = true;
+
+        try {
+          await api('/api/register', {
+            method: 'POST',
+            body: JSON.stringify({
+              name: fd.get('name'),
+              password: fd.get('password'),
+            }),
+          });
+          showToast('注册成功！正在跳转...', 'success', 1000);
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 500);
+        } catch (err) {
+          document.getElementById('regErr').textContent = err.message;
+          showToast('注册失败：' + err.message, 'error');
+          submitBtn.disabled = false;
+        }
+      });
+      getMe().then((u) => {
+        if (u) window.location.href = '/dashboard.html';
+      });
+    </script>
+  </body>
+</html>
