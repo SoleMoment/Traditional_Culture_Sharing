@@ -415,7 +415,7 @@ function seedTeacherIfNeeded(db) {
   );
 
   // eslint-disable-next-line no-console
-  console.log(`[db] 已创建教师账号: ${teacherUser} / ${teacherPass} （请在生产环境修改 TEACHER_PASSWORD）`);
+  console.log(`[db] 已创建教师账号: ${teacherUser}`);
 }
 
 ensureDataDir();

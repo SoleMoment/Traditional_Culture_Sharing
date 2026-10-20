@@ -11,6 +11,7 @@ const pinyinLib = require('pinyin');
 const pinyin = pinyinLib.default || pinyinLib.pinyin || pinyinLib;
 
 const PORT = Number(process.env.PORT || 3000);
+const HOST = process.env.HOST || '0.0.0.0';
 const MAIL_DOMAIN = process.env.MAIL_DOMAIN || 'jifang.lab';
 const UPLOAD_DIR = path.join(__dirname, '..', 'data', 'uploads');
 const MAX_UPLOAD_MB = Number(process.env.MAX_UPLOAD_MB || 8);
@@ -21,7 +22,7 @@ const app = express();
 const server = http.createServer(app);
 const DIST_DIR = path.join(__dirname, '..', 'dist');
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
-const STATIC_DIR = fs.existsSync(DIST_DIR) ? DIST_DIR : PUBLIC_DIR;
+const STATIC_DIR = fs.existsSync(path.join(DIST_DIR, 'index.html')) ? DIST_DIR : PUBLIC_DIR;
 
 const sessionMiddleware = session({
   name: 'lab.sid',
@@ -30,6 +31,7 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },
@@ -877,8 +879,8 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, HOST, () => {
   // eslint-disable-next-line no-console
-  console.log(`机房素养网已启动: http://0.0.0.0:${PORT}`);
+  console.log(`机房素养网已启动: http://${HOST}:${PORT}`);
   console.log(`邮件域 @${MAIL_DOMAIN}  上传目录 ${UPLOAD_DIR}`);
 });
